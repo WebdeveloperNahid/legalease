@@ -9,13 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.6.19",
     "@gravity-ui/uikit": "^7.42.0",
     "@heroui/react": "^3.2.1",
     "@heroui/styles": "^3.2.1",
+    "better-auth": "^1.6.19",
+    "mongodb": "^7.3.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-icons": "^5.6.0"
+    "react-icons": "^5.6.0",
+    "swiper": "^12.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
