@@ -1,12 +1,28 @@
 "use client";
 
+import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaScaleBalanced } from "react-icons/fa6"; 
+import { FaScaleBalanced } from "react-icons/fa6";
 
 const Navbar = () => {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, isPending } = useSession();
+  console.log(session);
+  const user = session?.user;
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login"); // redirect to login page
+        },
+      },
+    });
+  };
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -18,7 +34,6 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-gradient-to-b from-[#171610]/90 to-[#0E0E0A]/95 backdrop-blur-md border-b border-[#88865A]/20 shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-          
           {/* 🏛️ LOGO SECTION */}
           <Link href="/" className="flex items-center gap-3.5 group">
             <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD500] via-[#88865A] to-[#2A291A] p-[1px] shadow-[0_0_15px_rgba(136,134,90,0.2)] transition-all duration-300 group-hover:scale-105">
@@ -59,21 +74,33 @@ const Navbar = () => {
 
             {/* 🔐 AUTH BUTTONS */}
             <div className="flex items-center gap-5">
-              <Link
-                href="/login"
-                className="text-sm font-semibold text-gray-200 transition-colors duration-300 hover:text-[#FFD500]"
-              >
-                Sign In
-              </Link>
-
-              <Button
-                as={Link}
-                href="/register"
-                radius="md"
-                className="h-11 bg-gradient-to-r from-[#FFD500] to-[#D4B200] px-6 text-sm font-bold text-black shadow-[0_4px_20px_rgba(255,213,0,0.2)] transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[1px]"
-              >
-                Get Started
-              </Button>
+              {user ? (
+                <>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="ghost"
+                    className="bg-[#FFD500] font-bold text-gray-600"
+                  >
+                    Logout
+                  </Button>{" "}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <Link
+                    href="/signin"
+                    className="text-sm font-semibold text-gray-200 transition-colors duration-300 hover:text-[#FFD500]"
+                  >
+                    Signin
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="h-11 bg-gradient-to-r from-[#FFD500] to-[#171817] px-6 text-sm font-bold text-white shadow-[0_4px_20px_rgba(255,213,0,0.2)]  transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[1px] rounded-full flex justify-center items-center "
+                  >
+                    SignUp
+                  </Link>{" "}
+                </>
+              )}
             </div>
           </div>
 
@@ -85,12 +112,32 @@ const Navbar = () => {
               aria-label="Toggle Menu"
             >
               {isMenuOpen ? (
-                <svg className="h-6 w-6 text-[#FFD500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6 text-[#FFD500]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>
@@ -118,23 +165,33 @@ const Navbar = () => {
 
             <div className="mt-4 border-t border-[#88865A]/10 pt-4">
               <div className="flex flex-col gap-3">
-                <Link
-                  href="/login"
-                  className="flex h-12 items-center justify-center rounded-xl text-base font-semibold text-gray-300 transition-all hover:bg-[#88865A]/10 hover:text-[#FFD500]"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-
-                <Button
-                  as={Link}
-                  href="/register"
-                  className="h-12 w-full bg-gradient-to-r from-[#FFD500] to-[#D4B200] font-bold text-black"
-                  radius="xl"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Get Started
-                </Button>
+                {user ? (
+                  <>
+                    <Button
+                      onClick={handleSignOut}
+                      variant="ghost"
+                      className="bg-[#FFD500] font-bold text-gray-600"
+                    >
+                      Logout
+                    </Button>{" "}
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <Link
+                      href="/signin"
+                      className="text-sm font-semibold text-gray-200 transition-colors duration-300 hover:text-[#FFD500]"
+                    >
+                      Signin
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="h-11 w-19 bg-gradient-to-r from-[#FFD500] to-[#171817] px-6 text-sm font-bold text-white shadow-[0_4px_20px_rgba(255,213,0,0.2)]  transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[1px] rounded-full flex justify-center items-center "
+                    >
+                      SignUp
+                    </Link>{" "}
+                  </>
+                )}
               </div>
             </div>
           </div>
