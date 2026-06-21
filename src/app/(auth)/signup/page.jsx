@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { Eye, EyeSlash, Person, At, ShieldKeyhole } from "@gravity-ui/icons";
 import { FaGoogle } from "react-icons/fa6";
-import { signUp} from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function SignupPage() {
         email,
         password,
         name,
-        role
+        role,
       });
 
       if (authError) {
@@ -71,6 +71,17 @@ export default function SignupPage() {
       setError("An unexpected network error occurred.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (err) {
+      setError("Google authentication failed.");
     }
   };
 
@@ -147,7 +158,7 @@ export default function SignupPage() {
                 value="user"
                 className="bg-white text-amber-700 dark:bg-[#1C1A0E] dark:text-[#FFD500] font-semibold"
               >
-               Client
+                Client
               </option>
               <option
                 value="lawyer"
@@ -253,7 +264,7 @@ export default function SignupPage() {
           {/* Google OAuth Button */}
           <Button
             type="button"
-            // onClick={handleGoogleLogin}
+            onClick={handleGoogleLogin}
             variant="bordered"
             className="w-full font-medium rounded-xl text-sm h-11 sm:h-12 border-amber-300 dark:border-[#AF8752] text-amber-950 dark:text-[#FFD500] bg-amber-100 hover:bg-amber-200 font-semibold dark:hover:bg-white/5 transition-all"
           >

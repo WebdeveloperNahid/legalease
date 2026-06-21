@@ -11,7 +11,7 @@ const Navbar = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session, isPending } = useSession();
-  console.log(session);
+ 
   const user = session?.user;
 
   const handleSignOut = async () => {
