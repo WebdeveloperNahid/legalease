@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { Eye, EyeSlash, Person, At, ShieldKeyhole } from "@gravity-ui/icons";
 import { FaGoogle } from "react-icons/fa6";
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 
 export default function SignupPage() {
   const router = useRouter();

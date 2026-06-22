@@ -1,6 +1,7 @@
 "use server";
 
-import { serverDelete, serverMutation, serverUpdate } from "../core/server";
+import { serverDelete, serverFetch, serverMutation, serverUpdate } from "../core/server";
+
 
 export const createNewLawyer = async (newLawyerData) => {
   return serverMutation("/api/addLawyers", newLawyerData);
@@ -9,12 +10,12 @@ export const createNewLawyer = async (newLawyerData) => {
 //UPDATE
 
 export const updateLawyer = async (id, updateData) => {
-  return serverUpdate(`/api/lawyers/${id}`, updateData);
+  return serverUpdate(`/api/addLawyers/${id}`, updateData);
 };
 
 // — DELETE 
 export const deleteLawyer = async (id) => {
-  return serverDelete(`/api/lawyers/${id}`);
+  return serverDelete(`/api/addLawyers/${id}`);
 };
 
 

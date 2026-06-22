@@ -26,12 +26,13 @@ const Navbar = () => {
 
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "Browse Lawyers", href: "/browse-lawyers" },
+    { label: "Browse Lawyers", href: "/lawyers" },
+    {label: "UserProfile", href: "/dashboard/lawyer/manage-legal-profile" }
   ];
 
   return (
     // নেভবার ব্যাকগ্রাউন্ডে গভীর ডার্ক-জলপাই টোন এবং বর্ডারে #88865A এর সূক্ষ্ম টাচ
-    <nav className="sticky top-0 z-50 bg-gradient-to-b from-[#171610]/90 to-[#0E0E0A]/95 backdrop-blur-md border-b border-[#88865A]/20 shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
+    <nav className="sticky top-0 z-50 bg-[#464604fb] ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* 🏛️ LOGO SECTION */}
@@ -68,6 +69,8 @@ const Navbar = () => {
                 </li>
               ))}
             </ul>
+
+            <h2 className="text-yellow-400 font-semiboldbold ">Hi! {user?.name[0]}</h2>
 
             {/* Elegant Metallic Divider */}
             <div className="h-5 w-[1px] bg-gradient-to-b from-transparent via-[#88865A]/40 to-transparent" />
