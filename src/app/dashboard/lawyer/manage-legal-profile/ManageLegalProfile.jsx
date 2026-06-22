@@ -1,6 +1,6 @@
 "use client";
 
-import { createNewLawyer } from "@/lib/actions/add-lawyer";
+import { createNewLawyer, deleteLawyer, updateLawyer } from "@/lib/actions/add-lawyer";
 
 import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
@@ -45,8 +45,10 @@ const labelStyle = {
   display: "block",
 };
 
-export default function ManageLegalProfile({ lawyer, getLawyers}) {
-  const [profile, setProfile] = useState(Array.isArray(getLawyers) ? getLawyers[0] : getLawyers);
+export default function ManageLegalProfile({ lawyer, getLawyers }) {
+  const [profile, setProfile] = useState(
+    Array.isArray(getLawyers) ? getLawyers[0] : getLawyers,
+  );
   const [formData, setFormData] = useState(emptyForm);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -65,12 +67,12 @@ export default function ManageLegalProfile({ lawyer, getLawyers}) {
       const data = new FormData();
       data.append("image", file);
       const res = await fetch(
-        `https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`,
+        `https://api.imgbb.com/1/upload?key=${apikey}`,
         { method: "POST", body: data },
       );
-   if (!res.ok) {
+      if (!res.ok) {
         const errorHtmlOrText = await res.text();
-        console.error("❌ imgBB Server Raw Error:", errorHtmlOrText);
+        console.error("imgBB Server Raw Error:", errorHtmlOrText);
         throw new Error(`imgBB server error status: ${res.status}`);
       }
 
@@ -114,8 +116,8 @@ export default function ManageLegalProfile({ lawyer, getLawyers}) {
       setError("Please upload a profile photo.");
       return;
     }
-    if(!lawyer?.email) {
-      setError("Session not found. Please login again")
+    if (!lawyer?.email) {
+      setError("Session not found. Please login again");
     }
     setSubmitting(true);
     try {
@@ -126,7 +128,7 @@ export default function ManageLegalProfile({ lawyer, getLawyers}) {
         fee: Number(formData.fee),
         image: imageUrl,
         email: lawyer.email || "",
-       lawyerId: lawyer.id || lawyer._id,
+        lawyerId: lawyer.id || lawyer._id,
       };
       const payload = await createNewLawyer(newProfile);
       if (payload && payload.insertedId) {
@@ -176,48 +178,45 @@ export default function ManageLegalProfile({ lawyer, getLawyers}) {
       let imageUrl = profile.image;
       if (imageFile) imageUrl = await uploadToImgBB(imageFile);
 
-      // ═══════════════════════════════════════════════
-      // TODO: এই line টা সরিয়ে নিচের backend code বসাও
-      const updatedProfile = { ...profile, ...formData, image: imageUrl };
-      setProfile(updatedProfile);
-      // ───────────────────────────────────────────────
-      // BACKEND CODE (এখানে বসাবে):
-      // await axios.patch(
-      //   `${API_URL}/lawyers/${profile._id}`,
-      //   { ...formData, image: imageUrl },
-      //   { withCredentials: true }
-      // );
-      // await fetchProfile(); // backend থেকে fresh data আনো
-      // ═══════════════════════════════════════════════
+      const updatedData = { ...formData, image: imageUrl };
 
+      // backend এ PATCH request পাঠাচ্ছে
+      const result = await updateLawyer(profile._id, updatedData);
+
+      if (!result) {
+        throw new Error("Failed to update profile.");
+      }
+
+      // local state ও update করো
+      setProfile((prev) => ({ ...prev, ...updatedData }));
       setSuccess("Profile updated successfully!");
       setShowModal(false);
+      toast.success("Profile updated!");
     } catch (err) {
       setError(err.message);
     } finally {
       setSubmitting(false);
     }
   };
-
   // ── DELETE ───────────────────────────────────────────
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete your profile?"))
       return;
     try {
-      // ═══════════════════════════════════════════════
-      // TODO: নিচের backend code uncomment করো
-      // await axios.delete(
-      //   `${API_URL}/lawyers/${profile._id}`,
-      //   { withCredentials: true }
-      // );
-      // ═══════════════════════════════════════════════
+      // ✅ backend এ DELETE request পাঠাচ্ছে
+      const result = await deleteLawyer(profile._id);
+
+      if (!result) {
+        throw new Error("Failed to delete profile.");
+      }
+
       setProfile(null);
       setSuccess("Profile deleted.");
+      toast.success("Profile deleted!");
     } catch (err) {
       setError("Failed to delete profile.");
     }
   };
-
   // ── Shared form fields JSX — inline render ───────────
   // useCallback ব্যবহার করেছি তাই handleChange প্রতিবার নতুন হয় না
   // ফলে input focus থাকবে

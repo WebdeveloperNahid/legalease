@@ -1,5 +1,7 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
+//ServerFetch -- GET
+
 export const serverFetch = async (path) => {
   try {
     const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
@@ -9,6 +11,8 @@ export const serverFetch = async (path) => {
     return null; 
   }
 };
+
+//ServerMUtation -- POST
 
 export const serverMutation = async (path, data) => {
   try {
@@ -38,3 +42,33 @@ export const serverMutation = async (path, data) => {
 };
 
 
+// ServerUpdate  -— UPDATE এর জন্য (PATCH)
+
+export const serverUpdate = async (path, data) => {
+  try {
+    const res = await fetch(`${baseUrl}${path}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
+};
+
+
+
+//  — DELETE এর জন্য
+export const serverDelete = async (path) => {
+  try {
+    const res = await fetch(`${baseUrl}${path}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
+};
