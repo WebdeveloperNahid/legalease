@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Button } from "@heroui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+import { motion } from "framer-motion";
 import {
   FaGavel,
   FaArrowRight,
@@ -20,21 +21,30 @@ import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 
 export default function Banner() {
-  // Swiper ইনস্ট্যান্সকে ট্র্যাকিং করার জন্য স্টেট (ক্লিকিং ১০০% নিশ্চিত করবে)
   const [swiperInstance, setSwiperInstance] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // অ্যানিমেশন ভেরিয়েন্ট (Fade-in + Slide-up ইফেক্ট)
+  const fadeInVariant = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.7, ease: "easeOut" } 
+    }
+  };
 
   const slidesData = [
     {
       id: 1,
       tag: "Verified Legal Experts",
-      title: "Hire Top Professional Lawyers",
+      title: "Find & Hire Expert Legal Counsel", // 🚀 রিকোয়ারমেন্টের হুবহু ট্যাগলাইন
       highlight: "In Minutes",
       description:
         "Connect with certified, background-checked legal practitioners tailored to your specific corporate or personal legal needs.",
       imageUrl:
         "https://www.shutterstock.com/shutterstock/photos/2659622517/display_1500/stock-photo-handshake-after-consultation-between-male-lawyer-2659622517.jpg",
-      btnText: "Find a Lawyer",
+      btnText: "Browse Lawyers", // 🚀 রিকোয়ারমেন্ট অনুযায়ী বাটন টেক্সট ফিক্সড
       btnLink: "/browse-lawyers",
     },
     {
@@ -73,14 +83,15 @@ export default function Banner() {
           loop={true}
           autoplay={{
             delay: 5000,
-            disableOnInteraction: false, // ক্লিক করার পরও অটো স্লাইড চালু থাকবে
+            disableOnInteraction: false,
           }}
-          onSwiper={setSwiperInstance} // Swiper ইনস্ট্যান্স স্টেটে সেভ হচ্ছে
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)} // একটিভ ইনডেক্স ট্র্যাক
+          onSwiper={setSwiperInstance}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           modules={[Autoplay, Pagination, Navigation, EffectFade]}
           className="rounded-3xl border border-[#88865A]/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
         >
-          {slidesData.map((slide) => (
+          {/* 🚀 ফিক্সড: এখানে লুপের ভেতর index (idx) প্যারামিটারটি যুক্ত করা হয়েছে */}
+          {slidesData.map((slide, idx) => (
             <SwiperSlide key={slide.id}>
               <div className="relative w-full min-h-[550px] flex items-center px-6 py-16 md:px-20 md:py-24 overflow-hidden rounded-3xl">
                 {/* 🌌 ব্যাকগ্রাউন্ড ইমেজ */}
@@ -96,24 +107,62 @@ export default function Banner() {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#11100C]/60 via-transparent to-transparent" />
                 </div>
 
-                {/* 📝 TEXT CONTENT */}
+                {/* 📝 TEXT CONTENT WITH FRAMER MOTION ANIMATION */}
                 <div className="max-w-2xl space-y-6 z-10 pr-4 sm:pr-0">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#88865A]/40 bg-[#242304]/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FFD500]">
+                  
+                  {/* 🟢 ব্যাজ অ্যানিমেশন */}
+                  <motion.div
+                    key={`tag-${activeIndex}`}
+                    initial="hidden"
+                    animate={activeIndex === idx ? "visible" : "hidden"}
+                    variants={fadeInVariant}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#88865A]/40 bg-[#242304]/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#FFD500]"
+                  >
                     <FaGavel className="text-xs" /> {slide.tag}
-                  </div>
+                  </motion.div>
 
-                  <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl lg:leading-[1.15]">
+                  {/* 🟢 হেডিং টাইটেল অ্যানিমেশন */}
+                  <motion.h1
+                    key={`title-${activeIndex}`}
+                    initial="hidden"
+                    animate={activeIndex === idx ? "visible" : "hidden"}
+                    variants={{
+                      ...fadeInVariant,
+                      visible: { ...fadeInVariant.visible, transition: { delay: 0.15 } }
+                    }}
+                    className="text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl lg:leading-[1.15]"
+                  >
                     {slide.title}{" "}
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#FFD500] to-[#AF8752]">
                       {slide.highlight}
                     </span>
-                  </h1>
+                  </motion.h1>
 
-                  <p className="text-base leading-relaxed text-gray-300 sm:text-lg drop-shadow-md">
+                  {/* 🟢 ফিক্সড: ডেসক্রিপশনকে motion.p বানিয়ে ভ্যারিয়েন্ট ও কি (key) সেট করা হয়েছে */}
+                  <motion.p
+                    key={`desc-${activeIndex}`}
+                    initial="hidden"
+                    animate={activeIndex === idx ? "visible" : "hidden"}
+                    variants={{
+                      ...fadeInVariant,
+                      visible: { ...fadeInVariant.visible, transition: { delay: 0.25 } }
+                    }}
+                    className="text-base leading-relaxed text-gray-300 sm:text-lg drop-shadow-md"
+                  >
                     {slide.description}
-                  </p>
+                  </motion.p>
 
-                  <div className="flex flex-wrap items-center gap-4 pt-2">
+                  {/* 🟢 বাটনস গ্রুপ অ্যানিমেশন */}
+                  <motion.div
+                    key={`btns-${activeIndex}`}
+                    initial="hidden"
+                    animate={activeIndex === idx ? "visible" : "hidden"}
+                    variants={{
+                      ...fadeInVariant,
+                      visible: { ...fadeInVariant.visible, transition: { delay: 0.35 } }
+                    }}
+                    className="flex flex-wrap items-center gap-4 pt-2"
+                  >
                     <Button
                       as={Link}
                       href={slide.btnLink}
@@ -133,7 +182,7 @@ export default function Banner() {
                     >
                       Learn More
                     </Button>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* 🎖️ ভেরিফাইড ব্যাজ */}
@@ -147,8 +196,7 @@ export default function Banner() {
           ))}
         </Swiper>
 
-        {/* 🎛️ ১০০% ওয়ার্কিং ম্যানুয়াল নেভিগেশন সিস্টেম */}
-        {/* Left Arrow Button */}
+        {/* 🎛️ ম্যানুয়াল নেভিগেশন সিস্টেম */}
         <button
           onClick={() => swiperInstance?.slidePrev()}
           className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-[#88865A]/30 bg-[#242304]/80 text-[#88865A] backdrop-blur-md lg:opacity-0 lg:group-hover/banner:opacity-100 transition-all duration-300 hover:border-[#FFD500] hover:bg-[#242304]/90 hover:text-[#FFD500] focus:outline-none"
@@ -157,7 +205,6 @@ export default function Banner() {
           <FaChevronLeft className="text-xs sm:text-base" />
         </button>
 
-        {/* Right Arrow Button */}
         <button
           onClick={() => swiperInstance?.slideNext()}
           className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-[#88865A]/30 bg-[#242304]/80 text-[#88865A] backdrop-blur-md lg:opacity-0 lg:group-hover/banner:opacity-100 transition-all duration-300 hover:border-[#FFD500] hover:bg-[#242304]/90 hover:text-[#FFD500] focus:outline-none"
@@ -166,7 +213,7 @@ export default function Banner() {
           <FaChevronRight className="text-xs sm:text-base" />
         </button>
 
-        {/* 🔘 ১০০% ওয়ার্কিং কাস্টম ডটস (PAGINATION) */}
+        {/* 🔘 কাস্টম ডটস (PAGINATION) */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex justify-center gap-2.5">
           {slidesData.map((_, index) => (
             <button

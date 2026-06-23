@@ -8,7 +8,7 @@ export const serverFetch = async (path) => {
     if (!res.ok) return null;
     return await res.json();
   } catch (error) {
-    return null; 
+    return null;
   }
 };
 
@@ -30,17 +30,15 @@ export const serverMutation = async (path, data) => {
     }
 
     const result = await res.json();
-    
-    
+
     // console.log(" Actual Backend Response inside serverMutation:", result);
-    
-    return result; 
+
+    return result;
   } catch (error) {
     // console.error(" Server Mutation Error:", error.message);
     return null;
   }
 };
-
 
 // ServerUpdate  -— UPDATE এর জন্য (PATCH)
 
@@ -57,8 +55,6 @@ export const serverUpdate = async (path, data) => {
     return null;
   }
 };
-
-
 
 //  — DELETE এর জন্য
 export const serverDelete = async (path) => {

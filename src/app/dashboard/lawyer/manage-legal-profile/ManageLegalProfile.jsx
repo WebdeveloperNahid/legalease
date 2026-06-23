@@ -42,7 +42,7 @@ const labelStyle = {
   fontSize: 13,
   fontWeight: 500,
   marginBottom: 6,
-  display: "block",
+  display: "block", 
 };
 
 export default function ManageLegalProfile({ lawyer, getLawyers }) {
@@ -129,6 +129,8 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
         image: imageUrl,
         email: lawyer.email || "",
         lawyerId: lawyer.id || lawyer._id,
+         status: "pending", 
+          availability: "available",
       };
       const payload = await createNewLawyer(newProfile);
       if (payload && payload.insertedId) {
