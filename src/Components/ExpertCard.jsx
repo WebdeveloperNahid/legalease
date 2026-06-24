@@ -65,7 +65,8 @@ export default function ExpertCard({ expert, index }) {
       {/* অ্যাকশন বাটন */}
       <div className="px-6 pb-6 mt-1">
         <Link
-          href={`/lawyer/${expert._id}`}
+          href={`/lawyers/${expert._id}`}
+          //  href={`/lawyers/${lawyer._id}`}
           className="block text-center border-2 border-[#464604] text-white hover:bg-transparent hover:text-[#464604] bg-[#464604] text-[11px] font-extrabold tracking-wider uppercase py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98]"
         >
           View Full Profile

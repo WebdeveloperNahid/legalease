@@ -135,7 +135,7 @@ function BrowseLawyersContent() {
 
 /* ══════════ LAWYER CARD COMPONENT ══════════ */
 function LawyerCard({ lawyer }) {
-  const isBusy = lawyer.status === "Busy";
+  const isBusy = lawyer.availability?.toLowerCase()=== "busy";
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-[20px] border-[1.5px] border-[#f0f0f0] bg-white shadow-[0_2px_16px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#FFD500] hover:shadow-[0_16px_48px_rgba(255,213,0,0.12),0_4px_16px_rgba(0,0,0,0.06)]">

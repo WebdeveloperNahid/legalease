@@ -132,6 +132,50 @@ export default function LawyerDetailsClient({ lawyer }) {
           </p>
         </div> */}
       </div>
+
+      {showHireModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+            <h2 className="mb-3 text-xl font-bold text-[#11100C]">
+              Send Hiring Request
+            </h2>
+
+            <p className="mb-6 text-sm text-yellow-700">
+              Are you sure you want to hire
+              <span className="font-bold text-[#13f013]"> {lawyer.name}</span>?
+            </p>
+
+            <div className="mb-6 rounded-xl bg-[#fafafa] p-4">
+              <p className="text-xs text-gray-500">Lawyer Fee</p>
+
+              <p className="text-xl font-bold">${lawyer.fee}/hr</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowHireModal(false)}
+                className="flex-1 rounded-xl border py-3 text-sm font-bold"
+              >
+                Cancel
+              </button>
+
+              <Link
+                // href={`lawyers/${lawyer_id}/hiring`}
+                 href={`/lawyers/${lawyer._id}/hiring`}
+                // onClick={() => {
+                //   setShowHireModal(false);
+
+                //   // এখানে পরে API call হবে
+                //   // create hiring request
+                // }}
+                className="flex-1 rounded-xl bg-black py-3 text-sm font-bold text-white text-center"
+              >
+                Confirm
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
