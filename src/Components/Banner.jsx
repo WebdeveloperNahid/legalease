@@ -74,7 +74,7 @@ export default function Banner() {
   ];
 
   return (
-    <div className="relative w-full bg-[#11100C] py-8 sm:py-12 overflow-hidden">
+    <div className="relative w-full bg-[#e6e7ae] py-8 sm:py-12 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative group/banner">
         {/* SWIPER CONTAINER */}
         <Swiper
