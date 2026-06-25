@@ -13,12 +13,12 @@ export async function POST() {
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: '{{PRICE_ID}}',
+          price: 'price_1TmA9DFuNUZ2NS8A51FmAbtA',
           quantity: 1,
         },
       ],
       mode: 'payment',
-      success_url: `${origin}/pay/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
     });
     return NextResponse.redirect(session.url, 303)
   } catch (err) {
