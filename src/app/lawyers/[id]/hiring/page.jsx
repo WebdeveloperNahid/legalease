@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import HiringRequestClient from "./HiringRequest";
 import { getSingleLawyerDetail } from "@/lib/api/add-lawyer";
+import { getUserHiringHistory } from "@/lib/api/hiring";
 
 const HiringPage = async ({ params }) => {
   const { id } = await params;
@@ -12,7 +13,7 @@ const HiringPage = async ({ params }) => {
   if (!user) {
     redirect(`/signin?redirect=lawyers/${id}/hiring`);
   }
-  console.log("form hiring from " ,user);
+  // console.log("form hiring from ", user);
 
   if (user.role !== "user") {
     return (
@@ -38,14 +39,19 @@ const HiringPage = async ({ params }) => {
     );
   }
 
-  const lawyerHiringInfo = await getSingleLawyerDetail(id);
-  console.log(lawyerHiringInfo, "hello 76061034146104");
+  const history = await getUserHiringHistory(user?.id);
+  const existingRequest = history?.find((req) => req.lawyerId === id);
 
+  const lawyerHiringInfo = await getSingleLawyerDetail(id);
+  //  const existingRequest = await checkExistingHiringRequest(user.id, id);
+  
   return (
     <div>
-      Hiring Page
+      <h2 className="text-3xl font-extrabold text-center mt-10 text-[#172ca1]">hiring Lawyer</h2>
       <HiringRequestClient
-        lawyerHiringInfo={lawyerHiringInfo}  ClientUser={user}
+        lawyerHiringInfo={lawyerHiringInfo}
+        ClientUser={user}
+        existingRequest={existingRequest}
       ></HiringRequestClient>
     </div>
   );

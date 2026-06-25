@@ -1,10 +1,18 @@
 
 "use server"
 
-import { serverMutation } from "../core/server";
+import { serverFetch } from "../core/server";
 
 
-// Hire বাটনে Confirm করলে কল হবে
-export const createHiringRequest = async (hiringData) => {
-  return serverMutation("/api/hiring-requests", hiringData);
+
+// User & Lawyer er Hiring history আনার জন্য
+
+export const getUserHiringHistory = async (userId) => {
+  return serverFetch(`/api/hiring-requests/user/${userId}`);
+};
+
+//(Pay page এর জন্য, single document)
+
+export const getHiringRequestById = async (id) => {
+  return serverFetch(`/api/hiring-requests/${id}`);
 };

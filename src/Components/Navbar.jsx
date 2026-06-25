@@ -29,6 +29,8 @@ const Navbar = () => {
     { label: "Home", href: "/" },
     { label: "Browse Lawyers", href: "/lawyers" },
     { label: "UserProfile", href: "/dashboard/lawyer/manage-legal-profile" },
+   
+  
   ];
 
   return (
