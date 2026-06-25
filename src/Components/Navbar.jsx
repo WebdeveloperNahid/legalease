@@ -11,14 +11,15 @@ const Navbar = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session, isPending } = useSession();
- 
+
   const user = session?.user;
 
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/login"); // redirect to login page
+          router.push("/"); // redirect to login page
+          window.location.href = "/";
         },
       },
     });
@@ -27,7 +28,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Browse Lawyers", href: "/lawyers" },
-    {label: "UserProfile", href: "/dashboard/lawyer/manage-legal-profile" }
+    { label: "UserProfile", href: "/dashboard/lawyer/manage-legal-profile" },
   ];
 
   return (
@@ -70,7 +71,9 @@ const Navbar = () => {
               ))}
             </ul>
 
-            <h2 className="text-yellow-400 font-semiboldbold ">Hi! {user?.name[0]}</h2>
+            <h2 className="text-yellow-400 font-semiboldbold ">
+              Hi! {user?.name[0]}
+            </h2>
 
             {/* Elegant Metallic Divider */}
             <div className="h-5 w-[1px] bg-gradient-to-b from-transparent via-[#88865A]/40 to-transparent" />

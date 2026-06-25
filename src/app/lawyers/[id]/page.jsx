@@ -8,7 +8,7 @@ const LawyerDetailsPage = async ({ params }) => {
   const lawyer = await getSingleLawyerDetail(id);
   return (
     <div>
-      <LawyerDetailsClient lawyer={lawyer}></LawyerDetailsClient>
+      <LawyerDetailsClient id={id} lawyer={lawyer}></LawyerDetailsClient>
     </div>
   );
 };

@@ -6,7 +6,7 @@ const LawyerProfilePage = async () => {
   const user = await getUserSession();
  
   const lawyers = await getLawyerProfileData(user?.id);
-  console.log("T... is me..___-",user)
+  console.log("Update user profile ... post, edit ,delete from here..___-",user)
   return (
     <div>
       <ManageLegalProfile lawyer={user} getLawyers={lawyers || null}  ></ManageLegalProfile>

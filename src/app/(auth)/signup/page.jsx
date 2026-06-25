@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Card,
   Button,
@@ -18,6 +18,8 @@ import { signIn, signUp } from "@/lib/auth-client";
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   // Form fields
   const [name, setName] = useState("");
@@ -64,7 +66,7 @@ export default function SignupPage() {
       } else {
         setSuccess("Account created successfully! Redirecting to Home...");
         setTimeout(() => {
-          router.push("/");
+          router.push(redirectTo);
         }, 1500);
       }
     } catch (err) {
@@ -276,7 +278,7 @@ export default function SignupPage() {
           <div className="text-center pt-4 mt-1 sm:mt-2 text-xs sm:text-sm border-t border-amber-100 dark:border-[#AF8752]/20 text-amber-800/70 dark:text-[#AF8752]">
             Already have an account?{" "}
             <Link
-              href="/signin"
+              href={`/signin?redirect=${redirectTo}`}
               className="font-semibold cursor-pointer text-xs sm:text-sm text-amber-600 hover:text-amber-700 dark:text-[#FFD500] dark:hover:underline"
             >
               Sign in instead
