@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-import { PLAN_PRICE_ID, stripe } from "../../../lib/stripe";
+// import { PLAN_PRICE_ID, stripe } from "../../../lib/stripe";
 import { getUserSession } from "@/lib/core/session";
+import { PLAN_PRICE_ID, stripe } from "@/lib/stripe";
 
 export async function POST(request) {
   try {
@@ -10,7 +11,7 @@ export async function POST(request) {
     const origin = headersList.get("origin");
 
     const formData = await request.formData();
-   const requestId = formData.get("hiringRequest_Id"); 
+    const requestId = formData.get("hiringRequest_Id");
     const priceId = PLAN_PRICE_ID[requestId];
 
     const user = await getUserSession();
@@ -21,11 +22,12 @@ export async function POST(request) {
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price:priceId,
+          price: priceId,
           quantity: 1,
         },
       ],
       mode: "payment",
+      // metadata: { requestId },
       success_url: `${origin}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
     });
     return NextResponse.redirect(session.url, 303);

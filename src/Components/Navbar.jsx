@@ -35,7 +35,7 @@ const Navbar = () => {
 
   return (
     // নেভবার ব্যাকগ্রাউন্ডে গভীর ডার্ক-জলপাই টোন এবং বর্ডারে #88865A এর সূক্ষ্ম টাচ
-    <nav className="sticky top-0 z-50 bg-[#464604fb] ">
+    <nav className="sticky top-0 z-50 bg-[#556B2F] ">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* 🏛️ LOGO SECTION */}
