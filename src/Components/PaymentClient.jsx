@@ -117,6 +117,7 @@ export default function PaymentClient({ hiringRequest }) {
 
             {/* Pay Button */}
             <form action="/api/checkout_sessions" method="POST">
+            <input type="hidden" name="hiringRequest_Id" value={hiringRequest._id} />
               <section>
                 <button type="submit" role="link" className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#11100C] px-6 py-4 text-[14px] font-extrabold uppercase tracking-[2px] text-white transition hover:bg-[#AF8752] disabled:cursor-not-allowed disabled:opacity-50" >
                   Checkout
@@ -124,17 +125,6 @@ export default function PaymentClient({ hiringRequest }) {
               </section>
             </form>
 
-            {/* <button
-              onClick={handlePayNow}
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#11100C] px-6 py-4 text-[14px] font-extrabold uppercase tracking-[2px] text-white transition hover:bg-[#AF8752] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {loading ? (
-                "Redirecting to Stripe..."
-              ) : (
-                <>🔒 Pay ${hiringRequest.fee} Securely</>
-              )}
-            </button> */}
 
             <p className="mt-4 text-center text-[11px] text-[#9b9b9b]">
               You will be redirected to Stripe is secure payment page
