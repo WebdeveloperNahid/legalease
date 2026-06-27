@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function LawyerDetailsClient({ lawyer }) {
+export default function LawyerDetailsClient({ lawyer , reviews = []}) {
   const [showHireModal, setShowHireModal] = useState(false);
   const isBusy = lawyer?.status === "Busy";
 
@@ -115,23 +115,63 @@ export default function LawyerDetailsClient({ lawyer }) {
         </div>
 
         {/* Client Reviews Section */}
-        {/* <div className="mt-8 rounded-[24px] border border-[#f0f0f0] bg-white p-8 md:p-10">
-          <h3 className="mb-6 text-[17px] font-bold text-[#11100C]">
-            Client Reviews
-          </h3>
-          <textarea
-            className="mb-4 h-32 w-full rounded-xl border border-[#e8e8e8] p-4 text-[13px] outline-none focus:border-[#AF8752]"
-            placeholder="Write your review about this lawyer..."
-          />
-          <button className="rounded-xl bg-[#FFD500] px-8 py-3 text-[12px] font-extrabold uppercase tracking-[1.5px] text-black transition hover:bg-[#AF8752] hover:text-white">
-            Post Review
-          </button>
-          <p className="mt-4 text-[11px] text-[#9b9b9b]">
-            Only verified clients who hire this lawyer will be able to submit
+        <div className="mt-8 rounded-[24px] border border-[#f0f0f0] bg-white p-8 md:p-10">
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-[17px] font-bold text-[#11100C]">
+              Client Reviews
+            </h3>
+            <span className="rounded-full bg-[#f8f7f4] px-3 py-1 text-[11px] font-bold text-[#6b6b6b]">
+              {reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}
+            </span>
+          </div>
+
+          {reviews.length === 0 ? (
+            <p className="text-[13px] text-[#9b9b9b]">
+              No reviews yet. Be the first to hire and share your experience.
+            </p>
+          ) : (
+            <div className="space-y-5">
+              {reviews.map((review) => (
+                <div
+                  key={review._id}
+                  className="rounded-2xl border border-[#f4f4f4] bg-[#fafafa] p-5"
+                >
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#AF8752]/10 text-[13px] font-extrabold text-[#AF8752]">
+                      {review.userName?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-bold text-[#11100C]">
+                        {review.userName}
+                      </p>
+                      <p className="text-[11px] text-[#9b9b9b]">
+                        {new Date(review.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-[13px] leading-[1.7] text-[#6b6b6b]">
+                    {review.comment}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <p className="mt-6 text-[11px] text-[#9b9b9b]">
+            Only verified clients who hire and pay this lawyer can submit
             reviews.
           </p>
-        </div> */}
+        </div>
       </div>
+        
+    
 
       {showHireModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -160,14 +200,8 @@ export default function LawyerDetailsClient({ lawyer }) {
               </button>
 
               <Link
-                // href={`lawyers/${lawyer_id}/hiring`}
+                
                  href={`/lawyers/${lawyer._id}/hiring`}
-                // onClick={() => {
-                //   setShowHireModal(false);
-
-                //   // এখানে পরে API call হবে
-                //   // create hiring request
-                // }}
                 className="flex-1 rounded-xl bg-black py-3 text-sm font-bold text-white text-center"
               >
                 Confirm

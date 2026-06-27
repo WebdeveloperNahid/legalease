@@ -218,6 +218,7 @@ function LawyerCard({ lawyer }) {
           <span className="inline group-hover:hidden">View Profile</span>
         </Link>
       </div>
+      
     </div>
   );
 }

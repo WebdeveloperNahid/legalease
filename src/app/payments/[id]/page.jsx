@@ -1,7 +1,8 @@
 import { getUserSession } from "@/lib/core/session";
 import { redirect, notFound } from "next/navigation";
 import PaymentClient from "@/Components/PaymentClient";
-import { getHiringRequestById } from "@/lib/api/hiring";
+import { getHiringRequestById } from "@/lib/api/payments";
+
 
 
 const PayPage = async ({ params }) => {

@@ -11,8 +11,3 @@ export const getUserHiringHistory = async (userId) => {
   return serverFetch(`/api/hiring-requests/user/${userId}`);
 };
 
-//(Pay page এর জন্য, single document)
-
-export const getHiringRequestById = async (id) => {
-  return serverFetch(`/api/hiring-requests/${id}`);
-};

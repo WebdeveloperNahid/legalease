@@ -14,5 +14,8 @@ export const PLAN_PRICE_ID = {
     "6a3de033cd44058559280387":"price_1TmPIsFuNUZ2NS8AyJ6z8DIV",
     "6a3de04fcd44058559280388": "price_1TmPLLFuNUZ2NS8AOHueP9b5",
     "6a3e3e0d79dc9af9ab997b2c":"price_1TmVhGFuNUZ2NS8AYl2QzjTY",
+    "6a3e72b6a6e99ae646a14ac1":"price_1TmZ6tFuNUZ2NS8ASnOjZ4T7",
+    "6a3e81a5a6e99ae646a14af5":"price_1Tma4CFuNUZ2NS8ALmbwlgOF",
+    "6a3f45ef0fc16ff941708a74":"price_1TmnMrFuNUZ2NS8AZ2bD9YkF"
 
 }
