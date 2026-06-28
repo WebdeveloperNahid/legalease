@@ -160,7 +160,7 @@ export default function SignupPage() {
                 value="user"
                 className="bg-white text-amber-700 dark:bg-[#1C1A0E] dark:text-[#FFD500] font-semibold"
               >
-                Client
+                User
               </option>
               <option
                 value="lawyer"

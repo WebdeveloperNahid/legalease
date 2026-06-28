@@ -44,14 +44,16 @@ const HiringPage = async ({ params }) => {
 
   const lawyerHiringInfo = await getSingleLawyerDetail(id);
   //  const existingRequest = await checkExistingHiringRequest(user.id, id);
-  
+
   return (
     <div>
-      <h2 className="text-3xl font-extrabold text-center mt-10 text-[#172ca1]">hiring Lawyer</h2>
+      <h2 className="text-3xl font-extrabold text-center mt-10 text-[#172ca1]">
+        hiring Lawyer
+      </h2>
       <HiringRequestClient
-        lawyerHiringInfo={lawyerHiringInfo}
-        ClientUser={user}
-        existingRequest={existingRequest}
+        lawyerHiringInfo={lawyerHiringInfo || {}}
+        ClientUser={user || {}}
+        existingRequest={existingRequest || {}}
       ></HiringRequestClient>
     </div>
   );

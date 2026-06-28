@@ -1,7 +1,11 @@
+import SkeletonCard from "@/Components/SkeletonCard";
+
 export default function Loading() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <SkeletonCard />
+      <SkeletonCard />
+      <SkeletonCard />
     </div>
   );
 }

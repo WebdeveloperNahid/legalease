@@ -12,7 +12,7 @@ const LawyerDashboardHomePage = () => {
     </div>
   }
   return <div>
-    {user.name}
+  
     I am a Lawer of Client side  ! http://localhost:3000/dashboard/lawyer
     <div>
       {/* <ManageLegalProfile></ManageLegalProfile> */}
