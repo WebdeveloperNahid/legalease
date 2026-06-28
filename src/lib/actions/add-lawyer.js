@@ -1,6 +1,6 @@
 "use server";
 
-import { serverDelete, serverFetch, serverMutation, serverUpdate } from "../core/server";
+import { serverDelete, serverMutation, serverUpdate } from "../core/server";
 
 
 export const createNewLawyer = async (newLawyerData) => {

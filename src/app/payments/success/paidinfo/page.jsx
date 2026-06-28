@@ -1,7 +1,7 @@
-// import { getHiringRequestById } from "@/lib/api/hiring";
 import { getUserSession } from "@/lib/core/session";
-import { submitReview } from "@/lib/actions/comments";
+// import { submitReview } from "@/lib/actions/comments";
 import { getHiringRequestById } from "@/lib/api/payments";
+import ReviewForm from "@/Components/ReviewForm";
 
 const PaidInfo = async ({ searchParams }) => {
   const { hiringRequestId } = await searchParams;
@@ -123,8 +123,9 @@ const PaidInfo = async ({ searchParams }) => {
             <h3 className="font-bold text-[#556B2F] mb-4 text-center">
               Leave a Review
             </h3>
+            <ReviewForm data={data} session={session}></ReviewForm>
 
-            <form action={submitReview} className="space-y-4">
+            {/* <form action={submitReview} className="space-y-4">
               <input type="hidden" name="lawyerId" value={data.lawyerId} />
               <input type="hidden" name="hiringRequestId" value={data._id} />
               <input type="hidden" name="userId" value={session.id} />
@@ -148,22 +149,9 @@ const PaidInfo = async ({ searchParams }) => {
               >
                 Submit Review
               </button>
-            </form>
+            </form> */}
           </div>
         )}
-
-        {/* <div className="mt-8 text-center border-t border-[#556B2F]/10 pt-6">
-          <p className="text-[13px] text-[#9b9b9b]">
-            Need help? Email us at{" "}
-            <p/>
-            <a
-              href="mailto:support@legalease.com"
-              className="text-[#556B2F] underline font-bold hover:text-[#3e4d22]"
-            >
-              support@legalease.com
-            </a>
-          </p>
-        </div> */}
       </div>
     </div>
   );

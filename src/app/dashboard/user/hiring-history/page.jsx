@@ -120,7 +120,7 @@ const UserHiringHistoryPage = async ({ params }) => {
                             value={request._id}
                           />
                           <Link
-                            href={`/lawyers/${lawyerId}/hiring`}
+                            href={`/payments/${request._id}`}
                             className="rounded-xl bg-[#11100C] px-5 py-2 text-[12px] font-bold uppercase tracking-[0.5px] text-white transition hover:bg-[#AF8752]"
                           >
                             Pay
