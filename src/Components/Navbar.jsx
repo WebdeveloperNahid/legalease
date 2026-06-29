@@ -38,9 +38,10 @@ const Navbar = () => {
   };
 
   if (user?.email) {
+    const userRole = user?.role?.toLowerCase();
     navLinks.push({
       label: "Dashboard",
-      href: dashboardLinks[user?.role] || "/dashboard",
+      href: dashboardLinks[userRole] || "/dashboard",
     });
   }
 

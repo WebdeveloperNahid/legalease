@@ -1,7 +1,7 @@
 "use server";
 
 import { serverMutation } from "../core/server";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 export const submitReview = async (formData) => {
   const lawyerId = formData.get("lawyerId");

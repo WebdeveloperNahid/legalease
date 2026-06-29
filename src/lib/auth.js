@@ -27,6 +27,21 @@ export const auth = betterAuth({
         type: "user",
         defaultValue: "user"
       },
+       publishingPaid: {
+      type: "boolean",
+      defaultValue: false,
+    },
+
+    publishingPaidAt: {
+      type: "date",
+      required: false,
+    },
+
+    publishingTransactionId: {
+      type: "string",
+      required: false,
+    },
+
     },
   },
   

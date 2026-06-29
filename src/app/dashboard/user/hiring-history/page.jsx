@@ -3,13 +3,12 @@ import { getUserSession } from "@/lib/core/session";
 import Link from "next/link";
 
 const statusStyles = {
-  pending: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  accepted: "bg-green-50 text-green-700 border border-green-200",
-  rejected: "bg-red-50 text-red-700 border border-red-200",
+  pending: "bg-[#FFD500]/15 text-[#8a6d00] border border-[#FFD500]/40",
+  accepted: "bg-[#556B2F]/10 text-[#556B2F] border border-[#556B2F]/30",
+  rejected: "bg-red-50 text-red-600 border border-red-200",
 };
 
-const UserHiringHistoryPage = async ({ params }) => {
-  const { lawyerId } = params;
+const UserHiringHistoryPage = async () => {
   const user = await getUserSession();
 
   if (!user) {
@@ -25,8 +24,8 @@ const UserHiringHistoryPage = async ({ params }) => {
   const hiringHistory = (await getUserHiringHistory(user.id)) || [];
 
   return (
-    <div className="p-6 md:p-10">
-      <div className="mb-8">
+    <div className="p-6 md:p-10 bg-[#f8f7f4] min-h-screen">
+      <div className="mb-6">
         <h1 className="font-[Georgia,_serif] text-3xl font-extrabold text-[#11100C]">
           Hiring History
         </h1>
@@ -35,42 +34,59 @@ const UserHiringHistoryPage = async ({ params }) => {
         </p>
       </div>
 
+      {/* 🔐 Logged-in account confirmation banner */}
+      <div className="mb-8 flex items-center gap-3 rounded-2xl border border-[#556B2F]/15 bg-[#556B2F]/5 px-5 py-3 w-fit">
+        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#556B2F]/10 text-[13px] font-extrabold text-[#556B2F]">
+          {user?.name?.charAt(0)?.toUpperCase() || "U"}
+        </div>
+        <div>
+          <p className="text-[12px] font-bold text-[#11100C]">
+            Logged in as {user?.name}
+          </p>
+          <p className="text-[11px] text-[#6b6b6b]">{user?.email}</p>
+        </div>
+      </div>
+
       {hiringHistory.length === 0 ? (
-        <div className="rounded-[24px] border border-[#f0f0f0] bg-white p-10 text-center">
+        <div className="rounded-[24px] border border-[#556B2F]/10 bg-white p-10 text-center">
           <p className="text-[#6b6b6b]">
-            You haven t sent any hiring requests yet.
+            You haven&apos;t sent any hiring requests yet.
           </p>
         </div>
       ) : (
-        <div className="rounded-[24px] border border-[#f0f0f0] bg-white overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.04)]">
+        <div className="rounded-[24px] border-2 border-[#556B2F]/10 bg-white overflow-hidden shadow-[0_8px_30px_rgba(85,107,47,0.08)] relative">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#556B2F] to-[#FFD500]" />
+
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-[#f8f7f4] border-b border-[#f0f0f0]">
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+              <tr className="bg-[#556B2F]/5 border-b border-[#556B2F]/10">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Lawyer
                 </th>
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Specialization
                 </th>
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Fee
                 </th>
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Hiring Date
                 </th>
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Status
                 </th>
-                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#9b9b9b]">
+                <th className="py-4 px-5 text-[11px] font-extrabold uppercase tracking-[1px] text-[#556B2F]/70">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              {hiringHistory.map((request) => (
+              {hiringHistory.map((request, i) => (
                 <tr
                   key={request._id}
-                  className="border-b border-[#f4f4f4] last:border-none hover:bg-[#fafafa] transition-colors"
+                  className={`border-b border-[#f4f4f4] last:border-none transition-colors hover:bg-[#556B2F]/[0.03] ${
+                    i % 2 === 0 ? "bg-white" : "bg-[#fafaf7]"
+                  }`}
                 >
                   <td className="py-4 px-5 font-bold text-[#11100C]">
                     {request.lawyerName}
@@ -78,7 +94,7 @@ const UserHiringHistoryPage = async ({ params }) => {
                   <td className="py-4 px-5 text-[#6b6b6b]">
                     {request.specialization}
                   </td>
-                  <td className="py-4 px-5 font-semibold text-[#11100C]">
+                  <td className="py-4 px-5 font-semibold text-[#556B2F]">
                     ${request.fee}
                   </td>
                   <td className="py-4 px-5 text-[#6b6b6b] text-sm">
@@ -100,7 +116,7 @@ const UserHiringHistoryPage = async ({ params }) => {
                   </td>
                   <td className="py-4 px-5">
                     {request.status === "pending" && (
-                      <span className="text-[12px] text-[#9b9b9b]">
+                      <span className="text-[12px] text-[#9b9b9b] italic">
                         Waiting for lawyer
                       </span>
                     )}
@@ -113,27 +129,19 @@ const UserHiringHistoryPage = async ({ params }) => {
 
                     {request.status === "accepted" &&
                       request.paymentStatus !== "paid" && (
-                        <form action="/api/checkout" method="POST">
-                          <input
-                            type="hidden"
-                            name="hiringRequest_Id"
-                            value={request._id}
-                          />
-                          <Link
-                            href={`/payments/${request._id}`}
-                            className="rounded-xl bg-[#11100C] px-5 py-2 text-[12px] font-bold uppercase tracking-[0.5px] text-white transition hover:bg-[#AF8752]"
-                          >
-                            Pay
-                          </Link>
-                        </form>
+                        <Link
+                          href={`/payments/${request._id}`}
+                          className="rounded-xl bg-[#556B2F] px-5 py-2 text-[12px] font-bold uppercase tracking-[0.5px] text-white transition hover:bg-[#3e4d22] shadow-sm"
+                        >
+                          Pay
+                        </Link>
                       )}
 
                     {request.paymentStatus === "paid" && (
                       <div className="flex items-center gap-3">
-                        <span className="rounded-xl bg-green-50 border border-green-200 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.5px] text-green-700">
+                        <span className="rounded-xl bg-[#556B2F]/10 border border-[#556B2F]/30 px-4 py-2 text-[12px] font-bold uppercase tracking-[0.5px] text-[#556B2F]">
                           Paid
                         </span>
-
                         <a
                           href={`/payments/success/paidinfo?hiringRequestId=${request._id}`}
                           className="text-[12px] font-semibold text-[#AF8752] underline hover:text-[#8e6e42]"

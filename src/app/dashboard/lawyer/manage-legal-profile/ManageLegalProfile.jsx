@@ -25,25 +25,11 @@ const specializations = [
 
 const emptyForm = { name: "", bio: "", fee: "", specialization: "" };
 
-const inputStyle = {
-  backgroundColor: "#11100C",
-  border: "1px solid #AF8752",
-  color: "#FFD500",
-  borderRadius: 10,
-  padding: "9px 14px",
-  fontSize: 14,
-  outline: "none",
-  width: "100%",
-  boxSizing: "border-box",
-};
+// ── পুরোনো inputStyle / labelStyle অবজেক্টের বদলে Tailwind className স্ট্রিং ──
+const inputClass =
+  "w-full box-border bg-[#11100C] border border-[#AF8752] text-[#FFD500] rounded-[10px] px-3.5 py-[9px] text-sm outline-none";
 
-const labelStyle = {
-  color: "#AF8752",
-  fontSize: 13,
-  fontWeight: 500,
-  marginBottom: 6,
-  display: "block", 
-};
+const labelClass = "block text-[#AF8752] text-[13px] font-medium mb-1.5";
 
 export default function ManageLegalProfile({ lawyer, getLawyers }) {
   const [profile, setProfile] = useState(
@@ -226,20 +212,20 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
     <>
       {/* Name */}
       <div>
-        <label style={labelStyle}>Full Name</label>
+        <label className={labelClass}>Full Name</label>
         <input
           name="name"
           value={formData.name}
           onChange={handleChange}
           required
           placeholder="e.g. Adv. Rahim Uddin"
-          style={inputStyle}
+          className={inputClass}
         />
       </div>
 
       {/* Bio */}
       <div>
-        <label style={labelStyle}>Bio / Professional Summary</label>
+        <label className={labelClass}>Bio / Professional Summary</label>
         <textarea
           name="bio"
           value={formData.bio}
@@ -247,25 +233,25 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
           required
           rows={3}
           placeholder="Write a short professional summary..."
-          style={{ ...inputStyle, resize: "vertical" }}
+          className={`${inputClass} resize-y`}
         />
       </div>
 
       {/* Specialization */}
       <div>
-        <label style={labelStyle}>Specialization</label>
+        <label className={labelClass}>Specialization</label>
         <select
           name="specialization"
           value={formData.specialization}
           onChange={handleChange}
           required
-          style={inputStyle}
+          className={inputClass}
         >
-          <option value="" disabled style={{ backgroundColor: "#11100C" }}>
+          <option value="" disabled className="bg-[#11100C]">
             Select specialization...
           </option>
           {specializations.map((s) => (
-            <option key={s} value={s} style={{ backgroundColor: "#11100C" }}>
+            <option key={s} value={s} className="bg-[#11100C]">
               {s}
             </option>
           ))}
@@ -274,7 +260,7 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
 
       {/* Fee */}
       <div>
-        <label style={labelStyle}>Consultation Fee ($)</label>
+        <label className={labelClass}>Consultation Fee ($)</label>
         <input
           name="fee"
           type="number"
@@ -283,40 +269,27 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
           onChange={handleChange}
           required
           placeholder="e.g. 500"
-          style={inputStyle}
+          className={inputClass}
         />
       </div>
 
       {/* Image */}
       <div>
-        <label style={labelStyle}>Profile Photo</label>
+        <label className={labelClass}>Profile Photo</label>
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          style={{ ...inputStyle, padding: "8px 12px", cursor: "pointer" }}
+          className={`${inputClass} px-3 py-2 cursor-pointer`}
         />
         {imagePreview && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              marginTop: 10,
-            }}
-          >
+          <div className="flex items-center gap-3 mt-2.5">
             <img
               src={imagePreview}
               alt="preview"
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: "2px solid #FFD500",
-              }}
+              className="w-[72px] h-[72px] rounded-full object-cover border-2 border-[#FFD500]"
             />
-            <span style={{ color: "#AF8752", fontSize: 12 }}>
+            <span className="text-[#AF8752] text-xs">
               {uploadingImage ? "⏳ Uploading to imgBB..." : "Preview"}
             </span>
           </div>
@@ -325,32 +298,14 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
 
       {/* Error */}
       {error && (
-        <div
-          style={{
-            backgroundColor: "#1a0000",
-            border: "1px solid #ff6b6b",
-            color: "#ff6b6b",
-            borderRadius: 10,
-            padding: "10px 14px",
-            fontSize: 13,
-          }}
-        >
+        <div className="bg-[#1a0000] border border-[#ff6b6b] text-[#ff6b6b] rounded-[10px] px-3.5 py-2.5 text-[13px]">
           ⚠️ {error}
         </div>
       )}
 
       {/* Success */}
       {success && (
-        <div
-          style={{
-            backgroundColor: "#001a00",
-            border: "1px solid #FFD500",
-            color: "#FFD500",
-            borderRadius: 10,
-            padding: "10px 14px",
-            fontSize: 13,
-          }}
-        >
+        <div className="bg-[#001a00] border border-[#FFD500] text-[#FFD500] rounded-[10px] px-3.5 py-2.5 text-[13px]">
           ✅ {success}
         </div>
       )}
@@ -361,37 +316,14 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
   // MAIN RENDER
   // ════════════════════════════════════════════════════
   return (
-    <div style={{ color: "#AF8752", padding: "8px 0" }}>
+    <div className="text-[#AF8752] py-2 px-0">
       {/* Page Header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          marginBottom: 24,
-          flexWrap: "wrap",
-          gap: 12,
-        }}
-      >
+      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1
-            style={{
-              color: "#FFD500",
-              fontSize: 22,
-              fontWeight: 700,
-              margin: 0,
-            }}
-          >
+          <h1 className="text-[#FFD500] text-[22px] font-bold m-0">
             Manage Legal Profile
           </h1>
-          <p
-            style={{
-              color: "#AF8752",
-              fontSize: 13,
-              marginTop: 6,
-              marginBottom: 0,
-            }}
-          >
+          <p className="text-[#AF8752] text-[13px] mt-1.5 mb-0">
             {profile
               ? "Your legal service listing on LegalEase"
               : "No profile yet. Create one to appear in Browse Lawyers."}
@@ -404,16 +336,7 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
               setError("");
               setSuccess("");
             }}
-            style={{
-              backgroundColor: "#FFD500",
-              color: "#11100C",
-              fontWeight: 700,
-              borderRadius: 10,
-              padding: "9px 20px",
-              fontSize: 14,
-              border: "none",
-              cursor: "pointer",
-            }}
+            className="bg-[#FFD500] text-[#11100C] font-bold rounded-[10px] px-5 py-[9px] text-sm border-none cursor-pointer"
           >
             + Create Profile
           </button>
@@ -422,64 +345,27 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
 
       {/* Global success */}
       {success && !showCreateForm && !showModal && (
-        <div
-          style={{
-            backgroundColor: "#001a00",
-            border: "1px solid #FFD500",
-            color: "#FFD500",
-            borderRadius: 10,
-            padding: "10px 14px",
-            fontSize: 13,
-            marginBottom: 16,
-          }}
-        >
+        <div className="bg-[#001a00] border border-[#FFD500] text-[#FFD500] rounded-[10px] px-3.5 py-2.5 text-[13px] mb-4">
           ✅ {success}
         </div>
       )}
 
       {/* ── CREATE FORM ──────────────────────────────── */}
       {!profile && showCreateForm && (
-        <div
-          style={{
-            backgroundColor: "#2E2D10",
-            border: "1px solid #AF8752",
-            borderRadius: 14,
-            padding: 24,
-            maxWidth: 560,
-          }}
-        >
-          <h2
-            style={{
-              color: "#FFD500",
-              fontSize: 17,
-              fontWeight: 600,
-              marginBottom: 20,
-              marginTop: 0,
-            }}
-          >
+        <div className="bg-[#2E2D10] border border-[#AF8752] rounded-2xl p-6 max-w-[560px]">
+          <h2 className="text-[#FFD500] text-[17px] font-semibold mb-5 mt-0">
             Create Your Legal Profile
           </h2>
-          <form
-            onSubmit={handleCreate}
-            style={{ display: "flex", flexDirection: "column", gap: 16 }}
-          >
+          <form onSubmit={handleCreate} className="flex flex-col gap-4">
             {renderFormFields()}
             <button
               type="submit"
               disabled={submitting || uploadingImage}
-              style={{
-                backgroundColor:
-                  submitting || uploadingImage ? "#8a7200" : "#FFD500",
-                color: "#11100C",
-                fontWeight: 700,
-                borderRadius: 10,
-                padding: "12px 0",
-                fontSize: 14,
-                border: "none",
-                cursor:
-                  submitting || uploadingImage ? "not-allowed" : "pointer",
-                width: "100%",
-              }}
+              className={`${
+                submitting || uploadingImage ? "bg-[#8a7200]" : "bg-[#FFD500]"
+              } text-[#11100C] font-bold rounded-[10px] py-3 text-sm border-none w-full ${
+                submitting || uploadingImage ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
             >
               {uploadingImage
                 ? "⏳ Uploading image..."
@@ -496,16 +382,7 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
               setImageFile(null);
               setImagePreview("");
             }}
-            style={{
-              marginTop: 12,
-              width: "100%",
-              fontSize: 13,
-              color: "#AF8752",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "8px 0",
-            }}
+            className="mt-3 w-full text-[13px] text-[#AF8752] bg-transparent border-none cursor-pointer py-2"
           >
             Cancel
           </button>
@@ -514,24 +391,10 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
 
       {/* ── PROFILE TABLE ────────────────────────────── */}
       {profile && (
-        <div
-          style={{
-            backgroundColor: "#2E2D10",
-            border: "1px solid #AF8752",
-            borderRadius: 14,
-            overflowX: "auto",
-          }}
-        >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: 14,
-              minWidth: 540,
-            }}
-          >
+        <div className="bg-[#2E2D10] border border-[#AF8752] rounded-2xl overflow-x-auto">
+          <table className="w-full border-collapse text-sm min-w-[540px]">
             <thead>
-              <tr style={{ borderBottom: "1px solid #AF8752" }}>
+              <tr className="border-b border-[#AF8752]">
                 {[
                   "Photo",
                   "Name & Bio",
@@ -541,13 +404,7 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
                 ].map((h) => (
                   <th
                     key={h}
-                    style={{
-                      color: "#FFD500",
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontWeight: 600,
-                      whiteSpace: "nowrap",
-                    }}
+                    className="text-[#FFD500] px-4 py-3 text-left font-semibold whitespace-nowrap"
                   >
                     {h}
                   </th>
@@ -556,93 +413,40 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: 16 }}>
+                <td className="p-4">
                   <img
                     src={profile.image}
                     alt={profile.name}
-                    style={{
-                      width: 52,
-                      height: 52,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "2px solid #FFD500",
-                    }}
+                    className="w-[52px] h-[52px] rounded-full object-cover border-2 border-[#FFD500]"
                   />
                 </td>
-                <td style={{ padding: 16 }}>
-                  <p style={{ color: "#FFD500", fontWeight: 600, margin: 0 }}>
+                <td className="p-4">
+                  <p className="text-[#FFD500] font-semibold m-0">
                     {profile.name}
                   </p>
-                  <p
-                    style={{
-                      color: "#AF8752",
-                      fontSize: 12,
-                      marginTop: 4,
-                      marginBottom: 0,
-                      maxWidth: 220,
-                      overflow: "hidden",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                    }}
-                  >
+                  <p className="text-[#AF8752] text-xs mt-1 mb-0 max-w-[220px] overflow-hidden line-clamp-2">
                     {profile.bio}
                   </p>
                 </td>
-                <td style={{ padding: 16 }}>
-                  <span
-                    style={{
-                      backgroundColor: "#11100C",
-                      border: "1px solid #AF8752",
-                      color: "#FFD500",
-                      borderRadius: 6,
-                      padding: "4px 10px",
-                      fontSize: 12,
-                      fontWeight: 600,
-                    }}
-                  >
+                <td className="p-4">
+                  <span className="bg-[#11100C] border border-[#AF8752] text-[#FFD500] rounded-md px-2.5 py-1 text-xs font-semibold">
                     {profile.specialization}
                   </span>
                 </td>
-                <td
-                  style={{
-                    padding: 16,
-                    color: "#FFD500",
-                    fontWeight: 700,
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <td className="p-4 text-[#FFD500] font-bold whitespace-nowrap">
                   ${profile.fee}
                 </td>
-                <td style={{ padding: 16 }}>
-                  <div style={{ display: "flex", gap: 8 }}>
+                <td className="p-4">
+                  <div className="flex gap-2">
                     <button
                       onClick={openEditModal}
-                      style={{
-                        backgroundColor: "#FFD500",
-                        color: "#11100C",
-                        fontWeight: 700,
-                        borderRadius: 8,
-                        padding: "7px 16px",
-                        fontSize: 13,
-                        border: "none",
-                        cursor: "pointer",
-                      }}
+                      className="bg-[#FFD500] text-[#11100C] font-bold rounded-lg px-4 py-[7px] text-[13px] border-none cursor-pointer"
                     >
                       ✏️ Edit
                     </button>
                     <button
                       onClick={handleDelete}
-                      style={{
-                        backgroundColor: "transparent",
-                        color: "#ff6b6b",
-                        fontWeight: 700,
-                        borderRadius: 8,
-                        padding: "7px 16px",
-                        fontSize: 13,
-                        border: "1px solid #ff6b6b",
-                        cursor: "pointer",
-                      }}
+                      className="bg-transparent text-[#ff6b6b] font-bold rounded-lg px-4 py-[7px] text-[13px] border border-[#ff6b6b] cursor-pointer"
                     >
                       🗑️ Delete
                     </button>
@@ -656,46 +460,10 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
 
       {/* ── EDIT MODAL ───────────────────────────────── */}
       {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 16px",
-            backgroundColor: "rgba(0,0,0,0.8)",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#2E2D10",
-              border: "1px solid #AF8752",
-              borderRadius: 16,
-              padding: 28,
-              width: "100%",
-              maxWidth: 520,
-              maxHeight: "90vh",
-              overflowY: "auto",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 20,
-              }}
-            >
-              <h2
-                style={{
-                  color: "#FFD500",
-                  fontSize: 17,
-                  fontWeight: 700,
-                  margin: 0,
-                }}
-              >
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80">
+          <div className="bg-[#2E2D10] border border-[#AF8752] rounded-2xl p-7 w-full max-w-[520px] max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-[#FFD500] text-[17px] font-bold m-0">
                 Edit Legal Profile
               </h2>
               <button
@@ -703,38 +471,21 @@ export default function ManageLegalProfile({ lawyer, getLawyers }) {
                   setShowModal(false);
                   setError("");
                 }}
-                style={{
-                  color: "#AF8752",
-                  background: "none",
-                  border: "none",
-                  fontSize: 22,
-                  cursor: "pointer",
-                }}
+                className="text-[#AF8752] bg-transparent border-none text-[22px] cursor-pointer"
               >
                 ✕
               </button>
             </div>
-            <form
-              onSubmit={handleUpdate}
-              style={{ display: "flex", flexDirection: "column", gap: 16 }}
-            >
+            <form onSubmit={handleUpdate} className="flex flex-col gap-4">
               {renderFormFields()}
               <button
                 type="submit"
                 disabled={submitting || uploadingImage}
-                style={{
-                  backgroundColor:
-                    submitting || uploadingImage ? "#8a7200" : "#FFD500",
-                  color: "#11100C",
-                  fontWeight: 700,
-                  borderRadius: 10,
-                  padding: "12px 0",
-                  fontSize: 14,
-                  border: "none",
-                  cursor:
-                    submitting || uploadingImage ? "not-allowed" : "pointer",
-                  width: "100%",
-                }}
+                className={`${
+                  submitting || uploadingImage ? "bg-[#8a7200]" : "bg-[#FFD500]"
+                } text-[#11100C] font-bold rounded-[10px] py-3 text-sm border-none w-full ${
+                  submitting || uploadingImage ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
               >
                 {uploadingImage
                   ? "⏳ Uploading image..."

@@ -28,7 +28,11 @@ export default async function Success({ searchParams }) {
   if (status === "complete") {
     const payInfo = {
       email: customerEmail,
-      hiringRequestId: metadata.hiringRequestId,
+      //------
+       paymentType: metadata.paymentType || "hiring",
+      //----
+      hiringRequestId: metadata.hiringRequestId || null,
+      lawyerEmail: metadata.lawyerEmail || null, 
       currency,
       sessionId: session_id,
       paidAt: new Date(created * 1000),
@@ -38,24 +42,54 @@ export default async function Success({ searchParams }) {
     console.log("Saving this:", payInfo);
     const transitionInfo = await createPayment(payInfo);
     console.log("I am Transition Data ===", transitionInfo);
+// ✅ Publishing payment — Lawyer এর জন্য আলাদা card
+    if (metadata.paymentType === "publishing") {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#f8f7f4] p-6">
+          <div className="max-w-md w-full bg-white p-10 rounded-[32px] border border-[#f0f0f0] shadow-xl text-center">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-50 mb-6">
+              <svg className="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
 
+            <h2 className="font-[Georgia,_serif] text-3xl font-extrabold text-[#11100C] mb-2">
+              Publishing Fee Paid!
+            </h2>
+
+            <p className="text-[#6b6b6b] text-base mb-2 leading-relaxed">
+              Your lawyer profile is now verified and ready to publish.
+            </p>
+
+            <p className="text-[#AF8752] font-bold text-lg mb-8">
+              ✅ Publishing Payment Successful
+            </p>
+
+            <Link
+              href="/dashboard/lawyer"
+              className="block w-full py-4 bg-[#11100C] text-white rounded-2xl font-bold uppercase tracking-[1px] hover:bg-[#AF8752] transition-all duration-300 transform hover:scale-[1.02]"
+            >
+              Go to Dashboard → Publish Your Profile
+            </Link>
+
+            <p className="text-[13px] text-[#9b9b9b] pt-4">
+              Need help? Email us at{" "}
+              <a href="mailto:support@legalease.com" className="text-[#AF8752] underline font-medium hover:text-[#8e6e42]">
+                support@legalease.com
+              </a>
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // ✅ Hiring payment — তোমার existing card হুবহু same
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8f7f4] p-6">
         <div className="max-w-md w-full bg-white p-10 rounded-[32px] border border-[#f0f0f0] shadow-xl text-center">
-          {/* Success Icon */}
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-50 mb-6">
-            <svg
-              className="h-10 w-10 text-green-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
+            <svg className="h-10 w-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
 
@@ -75,15 +109,12 @@ export default async function Success({ searchParams }) {
               href={`/payments/success/paidinfo?hiringRequestId=${metadata.hiringRequestId}`}
               className="block w-full py-4 bg-[#11100C] text-white rounded-2xl font-bold uppercase tracking-[1px] hover:bg-[#AF8752] transition-all duration-300 transform hover:scale-[1.02]"
             >
-              View Hiring History 
+              View Hiring History
             </Link>
 
             <p className="text-[13px] text-[#9b9b9b] pt-4">
               Need help? Email us at{" "}
-              <a
-                href="mailto:support@legalease.com"
-                className="text-[#AF8752] underline font-medium hover:text-[#8e6e42]"
-              >
+              <a href="mailto:support@legalease.com" className="text-[#AF8752] underline font-medium hover:text-[#8e6e42]">
                 support@legalease.com
               </a>
             </p>

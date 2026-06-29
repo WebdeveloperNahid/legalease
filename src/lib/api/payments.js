@@ -11,3 +11,9 @@ export const getHiringRequestById = async (id) => {
 export const getCommentsByLawyer = async (lawyerId) => {
   return serverFetch(`/api/comments/lawyer/${lawyerId}`);
 };
+
+
+
+export const getPublishingStatus = async (email) => {
+  return serverFetch(`/api/users/publishing-status?email=${email}`);
+};

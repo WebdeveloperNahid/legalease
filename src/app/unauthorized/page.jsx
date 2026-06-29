@@ -28,7 +28,7 @@ export default function UnauthorizedPage() {
           Go Back Home
         </Link>
         <Link
-          href="/login"
+          href="/signin"
           className="px-8 py-3 bg-[#FFD700] text-[#556B2F] font-bold rounded-lg shadow-lg hover:bg-yellow-400 transition-all duration-300"
         >
           Login Again
