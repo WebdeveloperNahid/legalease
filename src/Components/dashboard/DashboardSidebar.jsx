@@ -38,17 +38,22 @@ export async function DashboardSidebar() {
     },
   ];
 
-  const lawyerNavLinks = [
-    { icon: House, label: "Home", href: "/dashboard/lawyer" },
-    {
-      icon: Magnifier,
-      label: "Lawyers Porfile",
-      href: "/dashboard/lawyer/manage-legal-profile",
-    },
-    { icon: Bell, label: "Notifications", href: "dashboard/lawyer" },
-    { icon: Envelope, label: "Messages", href: "dashboard/lawyer" },
-    { icon: Person, label: "Profile", href: "dashboard/lawyer" },
-  ];
+ const lawyerNavLinks = [
+  { icon: House, label: "Home", href: "/dashboard/lawyer" },
+  { 
+    icon: Clock, 
+    label: "Hiring History", 
+    href: "/dashboard/lawyer/hiring-history" 
+  },
+  { 
+    icon: ClipboardList, 
+    label: "Manage Services", 
+    href: "/dashboard/lawyer/manage-legal-profile" 
+  },
+  { icon: Bell, label: "Notifications", href: "/dashboard/lawyer/notifications" },
+  { icon: Envelope, label: "Messages", href: "/dashboard/lawyer/messages" },
+  { icon: User, label: "Profile", href: "/dashboard/lawyer/profile" },
+];
 
   const adminNavLinks = [
     { icon: House, label: "Home", href: "/dashboard/admin" },
