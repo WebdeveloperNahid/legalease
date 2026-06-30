@@ -2,6 +2,7 @@ import { getUserSession } from "@/lib/core/session";
 import {
   Bell,
   Clock,
+  ClockArrowRotateLeft,
   Envelope,
   House,
   Magnifier,
@@ -9,9 +10,11 @@ import {
   Receipt,
   ScalesBalanced,
 } from "@gravity-ui/icons";
+import { User } from "@gravity-ui/uikit";
 import { Button, Drawer } from "@heroui/react";
 import Link from "next/link";
 import { BiBarChart, BiMessageSquare } from "react-icons/bi";
+import { FaClipboardList } from "react-icons/fa6";
 import { LuUserRoundPen } from "react-icons/lu";
 
 import { VscLayoutSidebarLeft } from "react-icons/vsc";
@@ -41,12 +44,12 @@ export async function DashboardSidebar() {
  const lawyerNavLinks = [
   { icon: House, label: "Home", href: "/dashboard/lawyer" },
   { 
-    icon: Clock, 
+    icon: ClockArrowRotateLeft, 
     label: "Hiring History", 
     href: "/dashboard/lawyer/hiring-history" 
   },
   { 
-    icon: ClipboardList, 
+    icon: FaClipboardList , 
     label: "Manage Services", 
     href: "/dashboard/lawyer/manage-legal-profile" 
   },
