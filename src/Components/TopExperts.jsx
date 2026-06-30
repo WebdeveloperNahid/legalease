@@ -11,14 +11,14 @@ export default function TopExperts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchExperts = async () => {
-      setLoading(true);
-      const data = await getTopExperts();
-      setTopExperts(data);
-      setLoading(false);
-    };
-    fetchExperts();
-  }, []);
+  const fetchExperts = async () => {
+    setLoading(true);
+    const data = await getTopExperts();
+    setTopExperts(Array.isArray(data) ? data : []); // ← এই লাইন বদলাও
+    setLoading(false);
+  };
+  fetchExperts();
+}, []);
 
   return (
     <section className="bg-[#11100c15] py-20 border-t border-[#88865A]/10">

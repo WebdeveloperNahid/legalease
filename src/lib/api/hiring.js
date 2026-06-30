@@ -11,3 +11,8 @@ export const getUserHiringHistory = async (userId) => {
   return serverFetch(`/api/hiring-requests/user/${userId}`);
 };
 
+// Lawyer এর history আনা
+export const getLawyerHiringHistory = async (lawyerId) => {
+  return serverFetch(`/api/hiring-requests/lawyer/${lawyerId}`);
+};
+

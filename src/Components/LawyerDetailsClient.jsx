@@ -14,7 +14,7 @@ export default function LawyerDetailsClient({ lawyer , reviews = []}) {
       <div className="mx-auto max-w-[900px]">
         {/* Back Link */}
         <Link
-          href="/browse-lawyers"
+          href="/lawyers"
           className="mb-8 block text-[13px] font-bold text-[#AF8752] hover:underline"
         >
           ← Back to Browse

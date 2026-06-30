@@ -26,7 +26,7 @@ export default function HiringRequestClient({
     setError("");
     try {
       const result = await createHiringRequest({
-        lawyerId: lawyerHiringInfo?._id,
+          lawyerId: lawyerHiringInfo?.lawyerId, 
         lawyerName: lawyerHiringInfo?.name,
         specialization: lawyerHiringInfo?.specialization,
         fee: lawyerHiringInfo?.fee,

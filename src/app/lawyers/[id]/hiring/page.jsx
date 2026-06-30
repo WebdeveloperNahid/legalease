@@ -39,12 +39,12 @@ const HiringPage = async ({ params }) => {
     );
   }
 
-  const history = await getUserHiringHistory(user?.id);
-  const existingRequest = history?.find((req) => req.lawyerId === id);
-
   const lawyerHiringInfo = await getSingleLawyerDetail(id);
-  //  const existingRequest = await checkExistingHiringRequest(user.id, id);
 
+  const history = await getUserHiringHistory(user?.id);
+  const existingRequest = history?.find(
+    (req) => req.lawyerId === lawyerHiringInfo?.lawyerId,
+  );
   return (
     <div>
       <h2 className="text-3xl font-extrabold text-center mt-10 text-[#172ca1]">

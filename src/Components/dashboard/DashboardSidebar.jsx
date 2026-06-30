@@ -1,34 +1,41 @@
-
 import { getUserSession } from "@/lib/core/session";
 import {
   Bell,
+  Clock,
   Envelope,
   House,
   Magnifier,
   Person,
   Receipt,
+  ScalesBalanced,
 } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
 import Link from "next/link";
-import { FaChartPie } from "react-icons/fa6";
+import { BiBarChart, BiMessageSquare } from "react-icons/bi";
+import { LuUserRoundPen } from "react-icons/lu";
+
 import { VscLayoutSidebarLeft } from "react-icons/vsc";
 
 export async function DashboardSidebar() {
   const user = await getUserSession();
 
-  const clientNavLinks = [
+  const userNavLinks = [
     { icon: House, label: "Home", href: "/dashboard/user" },
     {
-      icon: Magnifier,
+      icon: Clock,
       label: "Hiring History",
       href: "/dashboard/user/hiring-history",
     },
     {
-      icon: Bell,
+      icon: BiMessageSquare,
+      label: "My Comments",
+      href: "/dashboard/user/comments",
+    },
+    {
+      icon: LuUserRoundPen,
       label: "Update Profile",
       href: "/dashboard/user/update-profile",
     },
-    { icon: Envelope, label: "My Comments", href: "/dashboard/user/comments" },
   ];
 
   const lawyerNavLinks = [
@@ -44,16 +51,17 @@ export async function DashboardSidebar() {
   ];
 
   const adminNavLinks = [
-    { icon: House, label: "Dashboard", href: "/dashboard/admin" },
-    {
-      icon: FaChartPie,
-      label: "Analytics",
-      href: "/dashboard/admin/analytics",
-    },
+    { icon: House, label: "Home", href: "/dashboard/admin" },
+    { icon: BiBarChart, label: "Analytics", href: "/dashboard/admin/analytics" },
     {
       icon: House,
       label: "Manage Users",
       href: "/dashboard/admin/manage-users",
+    },
+    {
+      icon: ScalesBalanced,
+      label: "Manage Lawyers",
+      href: "/dashboard/admin/manage-lawyers",
     },
     {
       icon: Receipt,
@@ -63,12 +71,12 @@ export async function DashboardSidebar() {
   ];
 
   const navLinksMap = {
-    client: clientNavLinks,
+    client: userNavLinks,
     lawyer: lawyerNavLinks,
-    admin:adminNavLinks
+    admin: adminNavLinks,
   };
 
-  const navItems = navLinksMap[user?.role] || clientNavLinks;
+  const navItems = navLinksMap[user?.role] || userNavLinks;
 
   const navContent = (
     <nav className="flex flex-col gap-1  ">

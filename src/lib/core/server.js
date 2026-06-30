@@ -1,13 +1,19 @@
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 //ServerFetch -- GET
-
 export const serverFetch = async (path) => {
   try {
+    console.log("FETCHING URL:", `${baseUrl}${path}`); // ← add করো
     const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
-    if (!res.ok) return null;
+    console.log("RESPONSE STATUS:", res.status); // ← add করো
+    if (!res.ok) {
+      const errText = await res.text();
+      console.log("ERROR BODY:", errText); // ← add করো
+      return null;
+    }
     return await res.json();
   } catch (error) {
+    console.log("CATCH ERROR:", error.message); // ← add করো
     return null;
   }
 };
