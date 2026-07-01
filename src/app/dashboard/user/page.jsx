@@ -3,7 +3,7 @@ import React from 'react';
 const ClientPage = () => {
     return (
         <div>
-            Client//User --- page
+           User Home page
         </div>
     );
 };

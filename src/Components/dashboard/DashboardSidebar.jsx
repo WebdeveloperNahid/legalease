@@ -31,7 +31,7 @@ export async function DashboardSidebar() {
     },
     {
       icon: BiMessageSquare,
-      label: "My Comments",
+      label: "Usre Comments",
       href: "/dashboard/user/comments",
     },
     {
@@ -50,12 +50,10 @@ export async function DashboardSidebar() {
   },
   { 
     icon: FaClipboardList , 
-    label: "Manage Services", 
+    label: "Manage-Lawyer-profile", 
     href: "/dashboard/lawyer/manage-legal-profile" 
   },
-  { icon: Bell, label: "Notifications", href: "/dashboard/lawyer/notifications" },
-  { icon: Envelope, label: "Messages", href: "/dashboard/lawyer/messages" },
-  { icon: User, label: "Profile", href: "/dashboard/lawyer/profile" },
+  
 ];
 
   const adminNavLinks = [

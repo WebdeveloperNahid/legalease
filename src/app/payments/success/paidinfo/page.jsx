@@ -125,31 +125,7 @@ const PaidInfo = async ({ searchParams }) => {
             </h3>
             <ReviewForm data={data} session={session}></ReviewForm>
 
-            {/* <form action={submitReview} className="space-y-4">
-              <input type="hidden" name="lawyerId" value={data.lawyerId} />
-              <input type="hidden" name="hiringRequestId" value={data._id} />
-              <input type="hidden" name="userId" value={session.id} />
-              <input
-                type="hidden"
-                name="userName"
-                value={session.name || session.email}
-              />
-
-              <textarea
-                name="comment"
-                rows="3"
-                className="w-full p-4 rounded-xl border border-[#556B2F]/20 focus:outline-none focus:ring-2 focus:ring-[#556B2F]/20 transition"
-                placeholder="Share your experience with this lawyer..."
-                required
-              />
-
-              <button
-                type="submit"
-                className="w-full bg-[#556B2F] text-white py-3 rounded-xl font-semibold hover:bg-[#3e4d22] transition-all shadow-md"
-              >
-                Submit Review
-              </button>
-            </form> */}
+            
           </div>
         )}
       </div>

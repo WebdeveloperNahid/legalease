@@ -3,7 +3,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
-import { serverFetch, serverMutation, serverUpdate } from "../core/server";
+import { serverFetch, serverMutation} from "../core/server";
 
 
 
@@ -47,9 +47,9 @@ export const getHiringRequestById = async (id) => {
 // ────────────────────────────────────────────
 export const updateHiringStatus = async (requestId, status) => {
   if (!requestId || !status) return null;
-  const result = await serverUpdate(
+  const result = await serverMutation(
     `/api/hiring-requests/${requestId}/status`,
-    { status }
+    { status } ,"PATCH"
   );
   revalidatePath("/dashboard/lawyer/hiring-history");
   return result;

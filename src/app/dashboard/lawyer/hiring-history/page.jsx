@@ -4,144 +4,44 @@ import { updateHiringStatus } from "@/lib/actions/hiring";
 import { getLawyerHiringHistory } from "@/lib/api/hiring";
 import { getUserSession } from "@/lib/core/session";
 
-// import { getLawyerHiringHistory, updateHiringStatus } from "@/lib/actions/hiring.actions";
-// import { auth } from "@/auth";
-
 export default async function LawyerHiringHistory() {
   const user = await getUserSession();
-  console.log("USER:", user); // ← add করো
-
   const lawyerId = user.id;
-  console.log("LAWYER ID:", lawyerId);
 
   const data = await getLawyerHiringHistory(lawyerId);
-  console.log("DATA FROM ACTION:", data); // ← এটা add করো — এটাই key
-
   const requests = Array.isArray(data) ? data : [];
-  console.log("FINAL REQUESTS:", requests); // ← এটাও add করো
+  console.log(requests, "8798790708098       requiest db------=-=-=-=-=-")
 
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-white">Hiring history</h1>
-        <p className="text-sm text-gray-400 mt-1">
+        <h1 className="text-2xl font-semibold text-green-500">Hiring history</h1>
+        <p className="text-sm text-gray-500 mt-1">
           Review and respond to incoming client requests
         </p>
       </div>
 
       {requests.length === 0 ? (
-        <div className="bg-[#111827] border border-gray-700 rounded-xl p-16 text-center">
-          <p className="text-4xl mb-3">📭</p>
-          <h3 className="text-base font-medium text-white mb-1">
-            No hiring requests yet
-          </h3>
-          <p className="text-sm text-gray-400">
-            When clients send requests, they will appear here.
-          </p>
-        </div>
+        <EmptyState />
       ) : (
-        <div className="bg-[#111827] border border-gray-700 rounded-xl overflow-hidden">
+        <div className="bg-gradient-to-br from-green-800 to-green-900 border border-green-700/50 rounded-xl overflow-hidden shadow-lg shadow-green-950/40">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-700">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  #
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Client
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Request date
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Action
-                </th>
+              <tr className="border-b border-green-700/50 bg-black/10">
+                <Th>#</Th>
+                <Th>Client</Th>
+                <Th>Request date</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
               </tr>
             </thead>
             <tbody>
               {requests.map((req, i) => (
-                <tr
-                  key={req._id}
-                  className="border-b border-gray-700/50 hover:bg-white/5 transition-colors"
-                >
-                  <td className="px-4 py-4 text-sm text-gray-500 font-medium">
-                    {String(i + 1).padStart(2, "0")}
-                  </td>
-
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={req.userName || "?"} />
-                      <div>
-                        <p className="font-semibold text-white">
-                          {req.userName || "Unknown"}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {req.userEmail || ""}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-4 text-gray-300">
-                    {req.requestDate
-                      ? new Date(req.requestDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : "—"}
-                  </td>
-
-                  <td className="px-4 py-4">
-                    <StatusBadge status={req.status} />
-                  </td>
-
-                  <td className="px-4 py-4">
-                    {req.status === "pending" ? (
-                      <div className="flex items-center gap-2">
-                        <form
-                          action={updateHiringStatus.bind(
-                            null,
-                            req._id,
-                            "accepted",
-                          )}
-                        >
-                          <button
-                            type="submit"
-                            className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-600 bg-transparent text-white hover:border-green-500 hover:text-green-400 transition-all cursor-pointer"
-                          >
-                            ✓ Accept
-                          </button>
-                        </form>
-                        <form
-                          action={updateHiringStatus.bind(
-                            null,
-                            req._id,
-                            "rejected",
-                          )}
-                        >
-                          <button
-                            type="submit"
-                            className="flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-600 bg-transparent text-white hover:border-red-500 hover:text-red-400 transition-all cursor-pointer"
-                          >
-                            ✕ Reject
-                          </button>
-                        </form>
-                      </div>
-                    ) : (
-                      <span className="text-sm text-gray-500 italic">
-                        No action needed
-                      </span>
-                    )}
-                  </td>
-                </tr>
+                <RequestRow key={req._id} req={req} index={i} />
               ))}
             </tbody>
           </table>
-          <div className="px-4 py-3 border-t border-gray-700 text-xs text-gray-500">
+          <div className="px-4 py-3 border-t border-green-700/50 bg-black/10 text-xs text-green-200/70">
             {requests.length} requests total
           </div>
         </div>
@@ -150,29 +50,118 @@ export default async function LawyerHiringHistory() {
   );
 }
 
+// ── Small layout helpers ───────────────────────────────────────
+
+function Th({ children }) {
+  return (
+    <th className="px-4 py-3 text-left text-xs font-semibold text-green-200/80 uppercase tracking-wider">
+      {children}
+    </th>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="bg-[#111827] border border-gray-700 rounded-xl p-16 text-center">
+      <p className="text-4xl mb-3">📭</p>
+      <h3 className="text-base font-medium text-white mb-1">No hiring requests yet</h3>
+      <p className="text-sm text-gray-400">
+        When clients send requests, they will appear here.
+      </p>
+    </div>
+  );
+}
+
+// ── Table row ───────────────────────────────────────────────────
+
+function RequestRow({ req, index }) {
+  return (
+    <tr className="border-b border-green-700/40 hover:bg-black/10 transition-colors">
+      <td className="px-4 py-4 text-sm text-green-200/60 font-medium">
+        {String(index + 1).padStart(2, "0")}
+      </td>
+
+      <td className="px-4 py-4">
+        <div className="flex items-center gap-3">
+          <Avatar name={req.userName || "?"} />
+          <div>
+            <p className="font-semibold text-white">{req.userName || "Unknown"}</p>
+            <p className="text-xs text-green-200/60 mt-0.5">{req.userEmail || ""}</p>
+          </div>
+        </div>
+      </td>
+
+      <td className="px-4 py-4 text-green-100">
+        {req.requestDate
+          ? new Date(req.requestDate).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+          : "—"}
+      </td>
+
+      <td className="px-4 py-4">
+        <StatusBadge status={req.status} />
+      </td>
+
+      <td className="px-4 py-4">
+        {req.status === "pending" ? (
+          <ActionButtons requestId={req._id} />
+        ) : (
+          <span className="text-sm text-green-200/50 italic">No action needed</span>
+        )}
+      </td>
+    </tr>
+  );
+}
+
+// ── Accept / Reject buttons ────────────────────────────────────
+
+function ActionButtons({ requestId }) {
+  const baseBtn =
+    "flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-lg border transition-all cursor-pointer";
+
+  return (
+    <div className="flex items-center gap-2">
+      <form action={updateHiringStatus.bind(null, requestId, "accepted")}>
+        <button
+          type="submit"
+          className={`${baseBtn} border-green-400/40 bg-white/5 text-green-300 hover:bg-green-400 hover:text-green-950 hover:border-green-400`}
+        >
+          ✓ Accept
+        </button>
+      </form>
+      <form action={updateHiringStatus.bind(null, requestId, "rejected")}>
+        <button
+          type="submit"
+          className={`${baseBtn} border-red-400/40 bg-white/5 text-pink-950 hover:bg-red-400 hover:text-red-950 hover:border-red-400`}
+        >
+          ✕ Reject
+        </button>
+      </form>
+    </div>
+  );
+}
+
 // ── Avatar ──────────────────────────────────────────────────────
 
-const COLORS = [
-  "bg-blue-600",
-  "bg-purple-600",
-  "bg-green-600",
-  "bg-rose-600",
+const AVATAR_COLORS = [
+  "bg-blue-500",
+  "bg-purple-500",
+  "bg-amber-500",
+  "bg-rose-500",
   "bg-orange-500",
-  "bg-teal-600",
+  "bg-teal-500",
 ];
 
 function Avatar({ name }) {
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-  const colorIndex =
-    name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % COLORS.length;
+  const initials = name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const colorIndex = name.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
+
   return (
     <div
-      className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 ${COLORS[colorIndex]}`}
+      className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 ring-2 ring-white/10 ${AVATAR_COLORS[colorIndex]}`}
     >
       {initials}
     </div>
@@ -181,34 +170,30 @@ function Avatar({ name }) {
 
 // ── Status Badge ─────────────────────────────────────────────────
 
+const STATUS_CONFIG = {
+  pending: {
+    label: "Pending",
+    badge: "bg-yellow-400 text-yellow-950",
+    dot: "bg-yellow-700",
+  },
+  accepted: {
+    label: "Accepted",
+    badge: "bg-white text-green-800",
+    dot: "bg-green-600",
+  },
+  rejected: {
+    label: "Rejected",
+    badge: "bg-red-400 text-red-950",
+    dot: "bg-red-800",
+  },
+};
+
 function StatusBadge({ status }) {
-  const map = {
-    pending: {
-      dot: "bg-yellow-400",
-      text: "text-yellow-400",
-      bg: "bg-yellow-400/10",
-      border: "border-yellow-400/30",
-      label: "Pending",
-    },
-    accepted: {
-      dot: "bg-green-400",
-      text: "text-green-400",
-      bg: "bg-green-400/10",
-      border: "border-green-400/30",
-      label: "Accepted",
-    },
-    rejected: {
-      dot: "bg-red-400",
-      text: "text-red-400",
-      bg: "bg-red-400/10",
-      border: "border-red-400/30",
-      label: "Rejected",
-    },
-  };
-  const s = map[status] || map.pending;
+  const s = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
+
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${s.bg} ${s.border} ${s.text}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${s.badge}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
       {s.label}

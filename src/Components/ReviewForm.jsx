@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { submitReview } from "@/lib/actions/comments";
+// import { submitReview } from "@/lib/actions/comments";
 
 export default function ReviewForm({ data, session }) {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function ReviewForm({ data, session }) {
       toast.success(result.message || "Review submitted!");
       setComment("");
       setTimeout(() => {
-        router.push("/dashboard/user/hiring-history");
+        router.push("/dashboard/user/comments");
       }, 1000);
     } else {
       toast.error(result?.message || "Something went wrong. Try again.");
