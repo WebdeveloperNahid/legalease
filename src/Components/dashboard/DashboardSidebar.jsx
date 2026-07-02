@@ -57,8 +57,8 @@ export async function DashboardSidebar() {
 ];
 
   const adminNavLinks = [
-    { icon: House, label: "Home", href: "/dashboard/admin" },
-    { icon: BiBarChart, label: "Analytics", href: "/dashboard/admin/analytics" },
+   
+    
     {
       icon: House,
       label: "Manage Users",
@@ -66,13 +66,13 @@ export async function DashboardSidebar() {
     },
     {
       icon: ScalesBalanced,
-      label: "Manage Lawyers",
-      href: "/dashboard/admin/manage-lawyers",
+      label: "All Transactions",
+      href: "/dashboard/admin/all-transactions",
     },
     {
       icon: Receipt,
-      label: "All Transactions",
-      href: "/dashboard/admin/all-transactions",
+      label: "Admin analytics",
+      href: "/dashboard/admin/analytics",
     },
   ];
 
@@ -85,7 +85,7 @@ export async function DashboardSidebar() {
   const navItems = navLinksMap[user?.role] || userNavLinks;
 
   const navContent = (
-    <nav className="flex flex-col gap-1  ">
+    <nav className="bg-amber-700 flex flex-col gap-1 ">
       {navItems.map((item) => (
         <Link
           key={item.label}
@@ -101,7 +101,7 @@ export async function DashboardSidebar() {
 
   return (
     <>
-      <aside className="hidden w-64 shrink-0 border-r border-default p-4 lg:block">
+      <aside className="hidden w-40 shrink-0 border-r border-default p-4  bg-amber-700 lg:block">
         {navContent}
       </aside>
       <Drawer>

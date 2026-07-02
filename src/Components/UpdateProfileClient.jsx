@@ -31,7 +31,7 @@ export default function UpdateProfileClient({ user }) {
 
     if (result?.success) {
       toast.success(result.message || "Profile updated!");
-      setTimeout(() => router.push("/dashboard"), 1000);
+      setTimeout(() => router.push("/dashboard/user/update-profile"), 1000);
     } else {
       toast.error(result?.message || "Failed to update profile.");
     }
