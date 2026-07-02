@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { updateUserProfile } from "@/lib/actions/update-profile";
@@ -10,6 +10,12 @@ export default function UpdateProfileClient({ user }) {
   const [name, setName] = useState(user?.name || "");
   const [image, setImage] = useState(user?.image || "");
   const [loading, setLoading] = useState(false);
+
+  // user prop আপডেট হলে (router.refresh() এর পর) ফর্মের state sync করা
+  useEffect(() => {
+    setName(user?.name || "");
+    setImage(user?.image || "");
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +37,7 @@ export default function UpdateProfileClient({ user }) {
 
     if (result?.success) {
       toast.success(result.message || "Profile updated!");
-      setTimeout(() => router.push("/dashboard/user/update-profile"), 1000);
+      router.refresh();
     } else {
       toast.error(result?.message || "Failed to update profile.");
     }
