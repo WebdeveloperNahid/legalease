@@ -1,76 +1,68 @@
+import { redirect } from "next/navigation";
+import { getUserToken } from "./session";
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 //ServerFetch -- GET
 export const serverFetch = async (path) => {
-  try {
-    const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
+  const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
 
-    if (!res.ok) {
-      const errText = await res.text();
-
-      return null;
-    }
-    return await res.json();
-  } catch (error) {
-    console.log("CATCH ERROR:", error.message);
+  if (!res.ok) {
+    const errText = await res.text();
     return null;
   }
+  return handleStatus(res);
 };
 
-//ServerMUtation -- POST
+export const authHeader = async () => {
+  const token = await getUserToken();
+  const header = token
+    ? {
+        authorization: `Bearer ${token}`,
+      }
+    : {};
+  return header;
+};
+
+export const protectedFetch = async (path) => {
+  const res = await fetch(`${baseUrl}${path}`, {
+    headers: await authHeader(),
+  });
+  return handleStatus(res);
+};
+
+//ServerMUtation -- POST can Update ,delete
 
 export const serverMutation = async (path, data, method = "POST") => {
-  try {
-    const res = await fetch(`${baseUrl}${path}`, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      console.error(` Backend response not OK. Status: ${res.status}`);
-      return null;
-    }
-    const result = await res.json();
-    return result;
-  } catch (error) {
-    return null;
+  const res = await fetch(`${baseUrl}${path}`, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+      ...(await authHeader()),
+    },
+    body: JSON.stringify(data),
+  });
+  if (res.status === 401) {
+    redirect("/signin");
+  } else if (res.status === 403) {
+    redirect("/unauthorized");
   }
+
+  return handleStatus(res);
 };
 
-// // ServerUpdate  -— UPDATE এর জন্য (PATCH)
+const handleStatus = (res) => {
+  if (res.status === 401) {
+    redirect("/signin");
+  } else if (res.status === 403) {
+    redirect("/unauthorized");
+  }
+  return res.json();
+};
 
-// export const serverUpdate = async (path, data) => {
-//   try {
-//     const res = await fetch(`${baseUrl}${path}`, {
-//       method: "PATCH",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(data),
-//     });
-//     if (!res.ok) return null;
-//     return await res.json();
-//   } catch (error) {
-//     return null;
-//   }
-// };
-
-//  — DELETE এর জন্য
-// export const serverDelete = async (path) => {
-//   try {
-//     const res = await fetch(`${baseUrl}${path}`, {
-//       method: "DELETE",
-//     });
-//     if (!res.ok) return null;
-//     return await res.json();
-//   } catch (error) {
-//     return null;
-//   }
-// };
-
-
-
+// // ServerUpdate  -— UPDATE এর জন্য (PATCH
 // পুরনো code যেগুলো এখনো serverUpdate/serverDelete ব্যবহার করছে, তাদের জন্য wrapper
+
 export const serverUpdate = async (path, data) => {
   return serverMutation(path, data, "PATCH");
 };

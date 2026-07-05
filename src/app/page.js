@@ -1,4 +1,4 @@
-"use client";
+
 
 import Banner from "@/Components/Banner";
 import FeaturedLawyers from "@/Components/FeaturedLawyers";

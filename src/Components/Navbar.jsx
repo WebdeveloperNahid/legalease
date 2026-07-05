@@ -2,6 +2,7 @@
 
 import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -28,7 +29,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Browse Lawyers", href: "/lawyers" },
-    { label: "UserProfile", href: "/dashboard/lawyer/manage-legal-profile" },
+   
   ];
 
   const dashboardLinks = {
@@ -83,9 +84,20 @@ const Navbar = () => {
             </ul>
 
             {user && (
-              <h2 className="text-yellow-400 font-semibold">
-                Hi! {user?.name?.[0]}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-yellow-400 font-semibold">
+                  Hi! {user?.name?.[0]}
+                </h2>
+                {user?.image && (
+                  <Image
+                    src={user.image}
+                    height={50}
+                    width={50}
+                    alt={user?.name || "User"}
+                    className="rounded-full"
+                  />
+                )}
+              </div>
             )}
 
             <div className="h-5 w-[1px] bg-gradient-to-b from-transparent via-[#88865A]/40 to-transparent" />
@@ -126,12 +138,32 @@ const Navbar = () => {
               aria-label="Toggle Menu"
             >
               {isMenuOpen ? (
-                <svg className="h-6 w-6 text-[#FFD500]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="h-6 w-6 text-[#FFD500]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               )}
             </button>

@@ -1,18 +1,19 @@
 
 "use server"
 
-import { serverFetch } from "../core/server";
+import { protectedFetch } from "../core/server";
 
 
 
-// User & Lawyer er Hiring history আনার জন্য
+
+// User & Lawyer 2 jon er Hiring history আনার জন্য
 
 export const getUserHiringHistory = async (userId) => {
-  return serverFetch(`/api/hiring-requests/user/${userId}`);
+  return protectedFetch(`/api/hiring-requests/user/${userId}`);
 };
 
 // Lawyer এর history আনা
 export const getLawyerHiringHistory = async (lawyerId) => {
-  return serverFetch(`/api/hiring-requests/lawyer/${lawyerId}`);
+  return protectedFetch(`/api/hiring-requests/lawyer/${lawyerId}`);
 };
 

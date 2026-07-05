@@ -1,7 +1,7 @@
-import { serverFetch } from "../core/server";
+import {  protectedFetch, serverFetch } from "../core/server";
 
 export const getLawyerProfileData = async (lawyerId) => {
-  return serverFetch(`/api/my/addLawyers?lawyerId=${lawyerId}`);
+  return protectedFetch(`/api/my/addLawyers?lawyerId=${lawyerId}`);
 };
 
 // সব লয়ারদের ফিল্টারসহ ডাটা আনার জন্য

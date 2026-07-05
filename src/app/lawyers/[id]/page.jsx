@@ -9,8 +9,7 @@ const LawyerDetailsPage = async ({ params }) => {
 
   const lawyer = await getSingleLawyerDetail(id);
   const reviews = await getCommentsByLawyer(lawyer.lawyerId);
-  console.log(reviews,"comment>>>>../// reviewsssss-----?????????????????")
-  console.log(lawyer,"comment>>>>..///")
+ 
   return (
     <div>
       <LawyerDetailsClient id={id} lawyer={lawyer}  reviews={reviews || []} ></LawyerDetailsClient>

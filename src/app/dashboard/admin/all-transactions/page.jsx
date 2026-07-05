@@ -8,7 +8,7 @@ const AllTransactionsPage = async () => {
   const transactions = await getAllTransactions();
   const safeTransactions = JSON.parse(JSON.stringify(transactions));
 
-  console.log(safeTransactions,"lkfsjdfl;ksadfj;lasjfal;dkf")
+  console.log(safeTransactions,"l----Transactions form")
 
   return <AllTransactionsClient transactions={safeTransactions} />;
 };
