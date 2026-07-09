@@ -3,6 +3,7 @@
 A full-stack **MERN + Next.js** web application that connects legal seekers and businesses with verified lawyers through a secure, streamlined digital marketplace.
 
 ---
+![Uploading image.png…]()
 
 ## 🌐 Live URL
 🔗 https://legalease-pearl-eta.vercel.app
