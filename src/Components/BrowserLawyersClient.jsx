@@ -1,6 +1,7 @@
 // src/app/lawyers/BrowseLawyersClient.jsx
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState, useTransition, useEffect } from "react";
@@ -50,14 +51,17 @@ export default function BrowseLawyersClient({
         </h1>
         <div className="mx-auto mb-[18px] h-[3px] w-[52px] rounded-sm bg-gradient-to-r from-[#FFD500] to-[#AF8752]" />
         <p className="text-[15px] leading-[1.7] text-[#6b6b6b]">
-          Browse verified legal professionals across all practice areas. Hire with confidence.
+          Browse verified legal professionals across all practice areas. Hire
+          with confidence.
         </p>
       </div>
 
       {/* ── Search & Filter ───────────────────────────── */}
       <div className="mx-auto mb-[52px] grid max-w-[860px] grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3.5 rounded-[18px] border border-[#ebebeb] bg-white p-5 px-6 shadow-[0_2px_20px_rgba(0,0,0,0.06)]">
         <div className="relative">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-[#AF8752]">🔍</span>
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[15px] text-[#AF8752]">
+            🔍
+          </span>
           <input
             type="text"
             placeholder="Search by name..."
@@ -98,7 +102,8 @@ export default function BrowseLawyersClient({
       {!loading && lawyers.length > 0 && (
         <div className="mx-auto mb-6 max-w-[1200px] pl-1">
           <p className="text-[13px] text-[#6b6b6b]">
-            Showing <strong className="text-[#11100C]">{lawyers.length}</strong> legal professionals
+            Showing <strong className="text-[#11100C]">{lawyers.length}</strong>{" "}
+            legal professionals
           </p>
         </div>
       )}
@@ -127,8 +132,12 @@ export default function BrowseLawyersClient({
       ) : lawyers.length === 0 ? (
         <div className="mx-auto max-w-[480px] rounded-[20px] border border-[#f0f0f0] bg-white px-6 py-20 text-center shadow-[0_2px_16px_rgba(0,0,0,0.04)]">
           <div className="mb-4 text-[52px]">⚖️</div>
-          <h3 className="mb-2 text-[17px] font-bold text-[#11100C]">No Lawyers Found</h3>
-          <p className="text-[13px] text-[#9b9b9b]">Try adjusting your filters or search differently.</p>
+          <h3 className="mb-2 text-[17px] font-bold text-[#11100C]">
+            No Lawyers Found
+          </h3>
+          <p className="text-[13px] text-[#9b9b9b]">
+            Try adjusting your filters or search differently.
+          </p>
         </div>
       ) : (
         <div className="mx-auto grid max-w-[1200px] grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6">
@@ -152,9 +161,13 @@ function LawyerCard({ lawyer }) {
       <div className="px-6 pb-5 pt-6">
         <div className="mb-[18px] flex items-start gap-4">
           <div className="relative shrink-0 rounded-full bg-gradient-to-br from-[#e8e8e8] to-[#d0d0d0] p-[3px] transition-[background] duration-300 group-hover:from-[#FFD500] group-hover:to-[#AF8752]">
-            <img
-              src={lawyer.image || "https://i.ibb.co/4ZQZ6q0/default-avatar.png"}
+            <Image
+              src={
+                lawyer.image || "https://i.ibb.co/4ZQZ6q0/default-avatar.png"
+              }
               alt={lawyer.name}
+              width={76}
+              height={76}
               className="block h-[76px] w-[76px] rounded-full border-[3px] border-white object-cover"
             />
             <span
@@ -181,7 +194,9 @@ function LawyerCard({ lawyer }) {
                     : "border-green-200 bg-green-50 text-green-600"
                 }`}
               >
-                <span className={`inline-block h-1.5 w-1.5 rounded-full ${isBusy ? "bg-red-600" : "bg-green-600"}`} />
+                <span
+                  className={`inline-block h-1.5 w-1.5 rounded-full ${isBusy ? "bg-red-600" : "bg-green-600"}`}
+                />
                 {isBusy ? "Currently Busy" : "Available Now"}
               </span>
             </div>
@@ -202,7 +217,9 @@ function LawyerCard({ lawyer }) {
             </p>
             <p className="text-[22px] font-extrabold leading-none text-[#11100C]">
               ${lawyer.fee}
-              <span className="text-[11px] font-medium text-[#AF8752]">/hr</span>
+              <span className="text-[11px] font-medium text-[#AF8752]">
+                /hr
+              </span>
             </p>
           </div>
 
@@ -211,7 +228,9 @@ function LawyerCard({ lawyer }) {
               Member Since
             </p>
             <p className="text-[22px] font-extrabold leading-none text-[#11100C]">
-              {lawyer.createdAt ? new Date(lawyer.createdAt).getFullYear() : "2024"}
+              {lawyer.createdAt
+                ? new Date(lawyer.createdAt).getFullYear()
+                : "2024"}
             </p>
           </div>
         </div>
@@ -220,7 +239,9 @@ function LawyerCard({ lawyer }) {
           href={`/lawyers/${lawyer._id}`}
           className="block rounded-xl border-2 border-transparent bg-[#11100C] py-3.5 text-center text-[12px] font-extrabold uppercase tracking-[1.5px] text-white transition-all duration-300 group-hover:bg-[#FFD500] group-hover:text-[#11100C]"
         >
-          <span className="hidden group-hover:inline">⚖ View Full Profile →</span>
+          <span className="hidden group-hover:inline">
+            ⚖ View Full Profile →
+          </span>
           <span className="inline group-hover:hidden">View Profile</span>
         </Link>
       </div>

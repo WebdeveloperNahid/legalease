@@ -16,7 +16,7 @@ export default async function BrowseLawyersPage({ searchParams }) {
     lawyers = Array.isArray(data) ? data : [];
   } catch (error) {
     console.error("Failed to load lawyers:", error);
-  }
+  } 
 
   return (
     <BrowseLawyersClient

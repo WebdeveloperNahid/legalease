@@ -189,7 +189,7 @@ export default function SignInPage() {
 
           {/* Navigation Link */}
           <div className="text-center pt-4 mt-1 sm:mt-2 text-xs sm:text-sm border-t border-amber-100 dark:border-[#AF8752]/20 text-amber-800/70 dark:text-[#AF8752]">
-            Don't have an account?{" "}
+            Dont have an account?{" "}
             <Link
               href={`/signup?redirect=${redirectTo}`}
               className="font-semibold cursor-pointer text-xs sm:text-sm text-amber-600 hover:text-amber-700 dark:text-[#FFD500] dark:hover:underline"
