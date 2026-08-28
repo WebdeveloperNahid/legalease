@@ -13,11 +13,11 @@ const PayPage = async ({ params }) => {
   // console.log(user)
 
   const hiringRequest = await getHiringRequestById(id);
-  console.log(hiringRequest,"ar it you hiringRequest By ID")
+  // console.log(hiringRequest,"ar it you hiringRequest By ID")
 
-  // if (!hiringRequest) notFound();
-  // if (hiringRequest.userId !== user?.id) redirect("/dashboard/user/hiring-history");
-  // if (hiringRequest.status !== "accepted") redirect("/dashboard/user/hiring-history");
+  if (!hiringRequest) notFound();
+  if (hiringRequest.userId !== user?.id) redirect("/dashboard/user/hiring-history");
+  if (hiringRequest.status !== "accepted") redirect("/dashboard/user/hiring-history");
 
   return <PaymentClient hiringRequest={hiringRequest} />;
 };

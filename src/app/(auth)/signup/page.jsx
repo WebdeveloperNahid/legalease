@@ -58,7 +58,7 @@ export default function SignupPage() {
         email,
         password,
         name,
-        role,
+        requestedRole: role,
       });
 
       if (authError) {
