@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 
 import { getUserSession } from "@/lib/core/session";
 import { stripe } from "@/lib/stripe";
+import { getHiringRequestById } from "@/lib/api/payments";
 
 const PUBLISHING_FEE = Number(process.env.PUBLISHING_FEE || 50);
 
@@ -59,10 +60,15 @@ export async function POST(request) {
     // ✅ যুক্ত হলো: requestId দিয়ে আসল hiring request data backend থেকে আনা
 
     const requestId = formData.get("hiringRequest_Id");
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/hiring-requests/${requestId}`,
-    );
-    const hiringRequest = await res.json(); // এর ভেতরেই lawyer-এর actual fee আছে (data.fee)
+    //-----------------------
+    // const res = await fetch(
+    //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/hiring-requests/${requestId}`,
+    // );
+    // const hiringRequest = await res.json(); // এর ভেতরেই lawyer-এর actual fee আছে (data.fee)
+    //----------------
+     const hiringRequest = await getHiringRequestById(requestId);
+    //-----------------------------
+
 
     if (!hiringRequest) {
       return NextResponse.json(
