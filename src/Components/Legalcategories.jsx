@@ -1,100 +1,141 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  FaScaleBalanced,
+  FaBuilding,
+  FaPeopleRoof,
+  FaLaptopCode,
+  FaFileSignature,
+  FaLandmark,
+  FaArrowRight,
+} from "react-icons/fa6";
+
+/* ---------- Config ---------- */
+// আপনার আসল Browse Lawyers route-এর সাথে মিলিয়ে নিন (navbar-এ যেটা আছে সেটাই)
+const BROWSE_BASE = "/lawyers";
+
+/*
+  Palette
+  Navy #14213D | Deep Navy #0B1526 | Gold #E2B93B
+  সাদা background-এ gold লেখা #8A6A1C | Pill #EAF0F9 | Border #DCE3EE
+*/
+
+const headingFont = {
+  fontFamily: "var(--font-heading, Georgia, 'Times New Roman', serif)",
+};
 
 const categories = [
-  { id: 1, name: "Criminal Law", slug: "Criminal", icon: "⚖️", count: "12+ Lawyers", desc: "Defense, bail, and trial representation." },
-  { id: 2, name: "Corporate Law", slug: "Corporate", icon: "🏢", count: "18+ Lawyers", desc: "Business setup, contracts, and compliance." },
-  { id: 3, name: "Family Law", slug: "Family", icon: "🏠", count: "14+ Lawyers", desc: "Divorce, child custody, and settlements." },
-  { id: 4, name: "Cyber & Tech Law", slug: "Cyber", icon: "💻", count: "8+ Lawyers", desc: "Data protection, online fraud, and IP rights." },
-  { id: 5, name: "Real Estate Law", slug: "Property", icon: "📜", count: "11+ Lawyers", desc: "Property disputes, registration, and vetting." },
-  { id: 6, name: "Civil Litigation", slug: "Civil", icon: "🏛️", count: "22+ Lawyers", desc: "Breach of contract, property damages, and appeals." },
+  { id: 1, name: "Criminal Law", slug: "Criminal", Icon: FaScaleBalanced, count: "12+ Lawyers", desc: "Defense, bail, and trial representation." },
+  { id: 2, name: "Corporate Law", slug: "Corporate", Icon: FaBuilding, count: "18+ Lawyers", desc: "Business setup, contracts, and compliance." },
+  { id: 3, name: "Family Law", slug: "Family", Icon: FaPeopleRoof, count: "14+ Lawyers", desc: "Divorce, child custody, and settlements." },
+  { id: 4, name: "Cyber & Tech Law", slug: "Cyber", Icon: FaLaptopCode, count: "8+ Lawyers", desc: "Data protection, online fraud, and IP rights." },
+  { id: 5, name: "Real Estate Law", slug: "Property", Icon: FaFileSignature, count: "11+ Lawyers", desc: "Property disputes, registration, and vetting." },
+  { id: 6, name: "Civil Litigation", slug: "Civil", Icon: FaLandmark, count: "22+ Lawyers", desc: "Breach of contract, property damages, and appeals." },
 ];
 
 export default function LegalCategories() {
+  const reduceMotion = useReducedMotion();
+
   const containerVariant = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: reduceMotion ? 1 : 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.08 },
+      transition: { staggerChildren: reduceMotion ? 0 : 0.08 },
     },
   };
 
-  const itemVariant = {
-    hidden: { opacity: 0, y: 25 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
-  };
+  const itemVariant = reduceMotion
+    ? { hidden: { opacity: 1, y: 0 }, visible: { opacity: 1, y: 0 } }
+    : {
+        hidden: { opacity: 0, y: 25 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+        },
+      };
 
   return (
-    // ✅ সেকশনের ব্যাকগ্রাউন্ডকে সুন্দর প্রফেশনাল মিস্ট-হোয়াইট করা হয়েছে
-    <section className="bg-[#F9FAFAF2] py-24 border-t border-[#464604]/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* সেকশন হেডার */}
-        <div className="text-center mb-16">
-          <span className="text-[10px] font-extrabold tracking-widest uppercase text-[#464604] bg-[#464604]/10 px-3 py-1 rounded-md border border-[#464604]/20">
-            Practice Areas
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-slate-950 tracking-tight mt-3">
+    <section className="border-t border-[#DCE3EE] bg-gradient-to-b from-white via-[#F3F6FB] to-[#EEF2F9] py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* ---------- Section header ---------- */}
+        <div className="mx-auto mb-14 max-w-2xl text-center">
+          <div className="flex items-center justify-center gap-3">
+            <span className="h-px w-8 bg-[#C99A12]" aria-hidden="true" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8A6A1C]">
+              Practice Areas
+            </span>
+            <span className="h-px w-8 bg-[#C99A12]" aria-hidden="true" />
+          </div>
+
+          <h2
+            className="mt-4 text-3xl font-bold tracking-[-0.015em] text-[#14213D] sm:text-4xl lg:text-5xl"
+            style={headingFont}
+          >
             Explore Legal Categories
           </h2>
-          <p className="text-slate-500 text-xs font-normal mt-2">Find specialized legal support tailored to your specific case</p>
-          <div className="w-12 h-[2px] bg-[#464604] mx-auto mt-4"></div>
+
+          <p className="mt-4 text-base leading-relaxed text-[#475569]">
+            Find specialized legal support tailored to your specific case.
+          </p>
+
+          <div
+            className="mx-auto mt-6 h-[3px] w-16 rounded-full bg-gradient-to-r from-transparent via-[#E2B93B] to-transparent"
+            aria-hidden="true"
+          />
         </div>
 
-        {/* গ্রিড কন্টেইনার */}
-        <motion.div 
+        {/* ---------- Grid ---------- */}
+        <motion.div
           variants={containerVariant}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
         >
-          {categories.map((cat) => (
-            <Link 
-              key={cat.id} 
-              href={`/lawyers?specialty=${cat.slug}`}
-              className="block"
-            >
-              <motion.div
-                variants={itemVariant}
-                whileHover={{ y: -6, scale: 1.01, border: "1px solid rgba(70,70,4,0.3)" }}
-                // ✅ কার্ডের কালার স্পষ্ট প্রফেশনাল বেইজ-অলিভ (#F0F2E8) এবং বর্ডার স্ট্রং করা হয়েছে
-                className="bg-[#F0F2E8] border border-[#DEE1D3] rounded-2xl p-6 transition-all duration-400 shadow-[0_4px_15px_rgba(70,70,4,0.02)] hover:shadow-[0_20px_40px_rgba(70,70,4,0.08)] group"
+          {categories.map(({ id, name, slug, Icon, count, desc }) => (
+            <motion.div key={id} variants={itemVariant} className="h-full">
+              <Link
+                href={`${BROWSE_BASE}?specialty=${slug}`}
+                className="group flex h-full flex-col rounded-2xl border border-[#DCE3EE] bg-white p-6 shadow-[0_4px_16px_rgba(20,33,61,0.05)] outline-none transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-[#E2B93B]/70 hover:shadow-[0_20px_44px_rgba(20,33,61,0.14)] focus-visible:ring-2 focus-visible:ring-[#E2B93B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F3F6FB] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
-                <div className="flex items-start justify-between">
-                  {/* আইকন বক্স */}
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-xl shadow-sm border border-[#DEE1D3] group-hover:bg-[#464604] group-hover:text-white transition-all duration-300">
-                    {cat.icon}
+                {/* Icon + count */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#14213D] text-lg text-[#E2B93B] transition-colors duration-300 group-hover:bg-[#E2B93B] group-hover:text-[#14213D] motion-reduce:transition-none">
+                    <Icon aria-hidden="true" />
                   </div>
-                  {/* কাউন্ট ব্যাজ */}
-                  <span className="text-[10px] font-extrabold text-[#464604] bg-white border border-[#DEE1D3] px-2.5 py-0.5 rounded-full shadow-sm">
-                    {cat.count}
+                  <span className="rounded-full border border-[#DCE3EE] bg-[#EAF0F9] px-3 py-1 text-xs font-semibold text-[#14213D]">
+                    {count}
                   </span>
                 </div>
 
-                {/* টেক্সট কন্টেন্ট */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="font-serif font-bold text-slate-950 text-base group-hover:text-[#464604] transition-colors duration-300">
-                    {cat.name}
+                {/* Text */}
+                <div className="mt-6">
+                  <h3
+                    className="text-lg font-bold tracking-[-0.01em] text-[#14213D] transition-colors duration-300 group-hover:text-[#8A6A1C]"
+                    style={headingFont}
+                  >
+                    {name}
                   </h3>
-                  {/* বিবরণী লেখার কালার একটু ডিপ করা হয়েছে পড়ার সুবিধার জন্য */}
-                  <p className="text-xs text-slate-600 font-normal leading-relaxed line-clamp-2">
-                    {cat.desc}
+                  <p className="mt-2 text-sm leading-relaxed text-[#475569]">
+                    {desc}
                   </p>
                 </div>
 
-                {/* এক্সপ্লোর বাটন লিংক */}
-                <div className="mt-5 flex items-center gap-1.5 text-[11px] font-extrabold text-[#464604] opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-[-5px] group-hover:translate-x-0">
-                  <span>Explore Advocates</span>
-                  <span>→</span>
-                </div>
-              </motion.div>
-            </Link>
+                {/* Link text: সবসময় দেখা যাবে (touch ও keyboard-এর জন্য) */}
+                <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-[#8A6A1C]">
+                  View Lawyers
+                  <FaArrowRight
+                    aria-hidden="true"
+                    className="text-xs transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                  />
+                </span>
+              </Link>
+            </motion.div>
           ))}
         </motion.div>
-
       </div>
     </section>
   );
