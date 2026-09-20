@@ -29,7 +29,8 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 
 /* ---------- Config ---------- */
-const SLIDE_DELAY = 3000; // 3 সেকেন্ড
+const SLIDE_DELAY = 3000; // এক slide থেকে আরেক slide-এ মোট সময় (ms)
+const TRANSITION_MS = 900; // fade-এর সময়
 const NAVBAR_HEIGHT = 72; // Navbar.jsx-এর উচ্চতার সাথে একই রাখুন
 
 const ROUTES = {
@@ -297,7 +298,7 @@ export default function Banner() {
     else swiper.autoplay.start();
   }, [reduceMotion, swiper]);
 
-  /* চেপে ধরলে slide থামবে, ছাড়লে আবার চলবে (hover-এ কিছু হবে না) */
+  /* ছাড়লে আবার চলবে (hover-এ কিছু হবে না) */
   const release = useCallback(() => {
     if (!holdingRef.current) return;
     holdingRef.current = false;
@@ -308,11 +309,14 @@ export default function Banner() {
     }
   }, [swiper, reduceMotion]);
 
+  /* চেপে ধরলে slide থামবে */
   const hold = useCallback(
     (e) => {
       if (reduceMotion || holdingRef.current) return;
       // mouse-এর ডান/মাঝের বোতাম ধরলে pause হবে না
       if (e.pointerType === "mouse" && e.button !== 0) return;
+      // button বা link চাপলে pause হবে না (শুধু ছবি/ফাঁকা জায়গা চাপলে)
+      if (e.target instanceof Element && e.target.closest("a, button")) return;
       holdingRef.current = true;
       setIsHolding(true);
       swiper?.autoplay?.stop();
@@ -363,11 +367,15 @@ export default function Banner() {
         modules={[Autoplay, EffectFade, Keyboard]}
         effect="fade"
         fadeEffect={{ crossFade: true }}
-        speed={900}
+        speed={TRANSITION_MS}
         loop
         simulateTouch={false}
         keyboard={{ enabled: true }}
-        autoplay={{ delay: SLIDE_DELAY, disableOnInteraction: false }}
+        /* Swiper transition শেষের পর delay গোনে, তাই মোট সময় ৩ সেকেন্ড রাখতে fade-এর সময় বাদ দেওয়া হয়েছে */
+        autoplay={{
+          delay: Math.max(SLIDE_DELAY - TRANSITION_MS, 500),
+          disableOnInteraction: false,
+        }}
         onSwiper={setSwiper}
         onSlideChange={(s) => setActiveIndex(s.realIndex)}
         className="w-full"
@@ -392,6 +400,7 @@ export default function Banner() {
                   sizes="100vw"
                   alt=""
                   draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
                   decoding="async"
                   loading={idx === 0 ? "eager" : "lazy"}
                   fetchPriority={idx === 0 ? "high" : "auto"}
@@ -408,7 +417,7 @@ export default function Banner() {
                 <div className="absolute inset-0 bg-[#793915]/15 mix-blend-multiply" />
 
                 {/* ছোট ও মাঝারি screen: লেখা পুরো ছবির উপরে, তাই সবখানে হালকা navy */}
-                <div className="absolute inset-0 bg-[#0B1526]/70 lg:hidden" />
+                <div className="absolute inset-0 bg-[#0B1526]/65 lg:hidden" />
 
                 {/* বড় screen: শুধু বাম দিকে গাঢ়, ডানে ছবি স্পষ্ট */}
                 <div className="absolute inset-0 hidden bg-gradient-to-r from-[#0B1526] via-[#0B1526]/80 via-40% to-transparent to-75% lg:block" />
