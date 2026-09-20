@@ -1,226 +1,314 @@
 "use client";
 
-import { authClient, useSession } from "@/lib/auth-client";
-import { Button } from "@heroui/react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { FaScaleBalanced } from "react-icons/fa6";
+import { usePathname, useRouter } from "next/navigation";
+import { authClient, useSession } from "@/lib/auth-client";
+import { FaScaleBalanced, FaBars, FaXmark, FaArrowRightFromBracket } from "react-icons/fa6";
 
+/* ---------- Config ---------- */
+// Banner.jsx-এর NAVBAR_HEIGHT-এর সাথে একই রাখুন
+const NAVBAR_HEIGHT = 72;
+
+const DASHBOARD_LINKS = {
+  user: "/dashboard/user",
+  lawyer: "/dashboard/lawyer",
+  admin: "/dashboard/admin",
+};
+
+/*
+  Palette: Navy + Gold
+  Deep Navy #0B1526 | Navy #14213D | Gold #E2B93B | Gold Light #F3D98B
+  Cream #FBF6EA     | Beige #E8DCC8
+*/
+
+/* ---------- Reusable styles ---------- */
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F3D98B]";
+
+const btnBase = `inline-flex h-10 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition-all duration-200 active:scale-[0.98] ${focusRing}`;
+const btnPrimary = `${btnBase} bg-gradient-to-b from-[#F3D98B] via-[#E2B93B] to-[#C99A12] font-bold text-[#0B1526] shadow-[0_6px_20px_rgba(226,185,59,0.3)] hover:shadow-[0_8px_26px_rgba(226,185,59,0.5)]`;
+const btnSecondary = `${btnBase} border border-[#FBF6EA]/35 bg-transparent text-[#FBF6EA] hover:border-[#E2B93B] hover:text-[#F3D98B]`;
+
+/* ---------- Small components ---------- */
+function Avatar({ user }) {
+  const initial = (user.name || user.email || "U").trim().charAt(0).toUpperCase();
+
+  if (user.image) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={user.image}
+        alt={user.name ? `${user.name}'s profile photo` : "Profile photo"}
+        referrerPolicy="no-referrer"
+        className="h-9 w-9 rounded-full border border-[#E2B93B]/70 object-cover"
+      />
+    );
+  }
+
+  return (
+    <span
+      aria-hidden="true"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E2B93B]/70 bg-[#E2B93B]/15 text-sm font-bold text-[#F3D98B]"
+    >
+      {initial}
+    </span>
+  );
+}
+
+function Logo() {
+  return (
+    <Link
+      href="/"
+      aria-label="LegalEase home"
+      className={`group flex items-center gap-3 rounded-lg ${focusRing}`}
+    >
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E2B93B]/60 bg-[#E2B93B]/10 transition-colors duration-200 group-hover:bg-[#E2B93B]">
+        <FaScaleBalanced
+          aria-hidden="true"
+          className="text-lg text-[#F3D98B] transition-colors duration-200 group-hover:text-[#0B1526]"
+        />
+      </span>
+      <span className="leading-none">
+        <span
+          className="block text-2xl font-bold tracking-[-0.01em] text-[#FBF6EA]"
+          style={{ fontFamily: "var(--font-heading, Georgia, 'Times New Roman', serif)" }}
+        >
+          Legal<span className="text-[#E2B93B]">Ease</span>
+        </span>
+        <span className="mt-1 hidden text-[10px] font-medium uppercase tracking-[0.2em] text-[#E8DCC8]/75 sm:block">
+          Online Lawyer Hiring
+        </span>
+      </span>
+    </Link>
+  );
+}
+
+/* ---------- Navbar ---------- */
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  const { data: session, isPending } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session } = useSession();
+  const [scrolled, setScrolled] = useState(false);
 
   const user = session?.user;
+  const isLoggedIn = Boolean(user?.email);
+
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Browse Lawyers", href: "/lawyers" },
+  ];
+
+  if (isLoggedIn) {
+    const role = user?.role?.toLowerCase() ?? "";
+    navLinks.push({
+      label: "Dashboard",
+      href: DASHBOARD_LINKS[role] ?? "/dashboard",
+    });
+  }
+
+  const isActive = (href) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const handleSignOut = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          setIsMenuOpen(false);
           router.push("/");
-          window.location.href = "/";
+          router.refresh();
         },
       },
     });
   };
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Browse Lawyers", href: "/lawyers" },
-   
-  ];
+  // scroll করলে shadow ও gold রেখা দেখানো
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  const dashboardLinks = {
-    user: "/dashboard/user",
-    lawyer: "/dashboard/lawyer",
-    admin: "/dashboard/admin",
-  };
+  // পেজ বদলালে mobile menu বন্ধ
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
-  if (user?.email) {
-    const userRole = user?.role?.toLowerCase();
-    navLinks.push({
-      label: "Dashboard",
-      href: dashboardLinks[userRole] || "/dashboard",
-    });
-  }
+  // Escape চাপলে mobile menu বন্ধ
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isMenuOpen]);
+
+  const firstName = user?.name?.trim().split(" ")[0] || "Account";
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#2B2B11] ">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between">
-          {/* 🏛️ LOGO SECTION */}
-          <Link href="/" className="flex items-center gap-3.5 group">
-            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD500] via-[#88865A] to-[#2A291A] p-[1px] shadow-[0_0_15px_rgba(136,134,90,0.2)] transition-all duration-300 group-hover:scale-105">
-              <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#11100C] transition-colors group-hover:bg-transparent">
-                <FaScaleBalanced className="text-xl text-[#FFD500] transition-colors group-hover:text-black" />
-              </div>
-            </div>
+    <header
+      className={`sticky top-0 z-50 bg-[#0B1526]/95 backdrop-blur-md transition-shadow duration-300 ${
+        scrolled ? "shadow-[0_8px_30px_rgba(0,0,0,0.35)]" : ""
+      }`}
+    >
+      <nav
+        aria-label="Main navigation"
+        className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+        style={{ height: NAVBAR_HEIGHT }}
+      >
+        <Logo />
 
-            <div className="leading-none">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FFD500]/80">
-                Premium Law
-              </span>
-              <h1 className="text-xl font-black text-white tracking-wide mt-0.5">
-                Legal<span className="text-[#FFD500]">Ease</span>
-              </h1>
-            </div>
-          </Link>
-
-          {/* 🌐 DESKTOP NAVIGATION */}
-          <div className="hidden items-center gap-8 md:flex">
-            <ul className="flex items-center gap-1.5 rounded-full border border-[#88865A]/20 bg-[#88865A]/5 p-1.5 backdrop-blur-lg">
-              {navLinks.map((link) => (
+        {/* ---------- Desktop ---------- */}
+        <div className="hidden items-center gap-8 md:flex">
+          <ul className="flex items-center gap-1">
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="relative rounded-full px-5 py-2 text-sm font-medium text-gray-300 transition-all duration-300 hover:text-[#FFD500] hover:bg-[#88865A]/15"
+                    aria-current={active ? "page" : undefined}
+                    className={`relative block rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 ${focusRing} ${
+                      active
+                        ? "text-[#FBF6EA]"
+                        : "text-[#E8DCC8]/85 hover:text-[#F3D98B]"
+                    }`}
                   >
                     {link.label}
+                    <span
+                      aria-hidden="true"
+                      className={`absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-[#E2B93B] transition-opacity duration-200 ${
+                        active ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
                   </Link>
                 </li>
-              ))}
-            </ul>
+              );
+            })}
+          </ul>
 
-            {user && (
-              <div className="flex items-center gap-2">
-                <h2 className="text-yellow-400 font-semibold">
-                  Hi! {user?.name?.[0]}
-                </h2>
-                {user?.image && (
-                  <Image
-                    src={user.image}
-                    height={50}
-                    width={50}
-                    alt={user?.name || "User"}
-                    className="rounded-full"
-                  />
-                )}
+          <div className="h-6 w-px bg-[#E2B93B]/30" aria-hidden="true" />
+
+          {isPending ? (
+            <div
+              className="h-10 w-44 animate-pulse rounded-xl bg-[#14213D]"
+              aria-hidden="true"
+            />
+          ) : isLoggedIn && user ? (
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2.5">
+                <Avatar user={user} />
+                <span className="max-w-[120px] truncate text-sm font-medium text-[#FBF6EA]">
+                  {firstName}
+                </span>
+              </div>
+              <button type="button" onClick={handleSignOut} className={btnSecondary}>
+                <FaArrowRightFromBracket aria-hidden="true" className="text-xs" />
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link href="/signin" className={btnSecondary}>
+                Sign In
+              </Link>
+              <Link href="/signup" className={btnPrimary}>
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* ---------- Mobile trigger ---------- */}
+        <button
+          type="button"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          className={`inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#FBF6EA]/30 text-[#FBF6EA] transition-colors hover:border-[#E2B93B] hover:text-[#F3D98B] md:hidden ${focusRing}`}
+        >
+          {isMenuOpen ? (
+            <FaXmark aria-hidden="true" className="text-lg" />
+          ) : (
+            <FaBars aria-hidden="true" className="text-lg" />
+          )}
+        </button>
+      </nav>
+
+      {/* নিচের gold রেখা (উচ্চতা বাড়ায় না) */}
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2B93B] to-transparent transition-opacity duration-300 ${
+          scrolled ? "opacity-90" : "opacity-40"
+        }`}
+      />
+
+      {/* ---------- Mobile menu ---------- */}
+      {isMenuOpen && (
+        <div id="mobile-menu" className="border-t border-[#E2B93B]/15 bg-[#0B1526] md:hidden">
+          <div className="mx-auto max-w-7xl space-y-4 px-4 py-5 sm:px-6">
+            {isLoggedIn && user && (
+              <div className="flex items-center gap-3 rounded-xl border border-[#E2B93B]/25 bg-[#14213D] p-3">
+                <Avatar user={user} />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-[#FBF6EA]">
+                    {user.name || "Account"}
+                  </p>
+                  <p className="truncate text-xs text-[#E8DCC8]/70">{user.email}</p>
+                </div>
               </div>
             )}
 
-            <div className="h-5 w-[1px] bg-gradient-to-b from-transparent via-[#88865A]/40 to-transparent" />
+            <ul className="space-y-1">
+              {navLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={active ? "page" : undefined}
+                      className={`block rounded-xl px-4 py-3 text-base font-medium transition-colors ${focusRing} ${
+                        active
+                          ? "bg-[#E2B93B]/15 text-[#F3D98B]"
+                          : "text-[#E8DCC8] hover:bg-[#14213D] hover:text-[#FBF6EA]"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
 
-            <div className="flex items-center gap-5">
-              {user ? (
-                <Button
+            <div className="flex flex-col gap-3 border-t border-[#E2B93B]/15 pt-4">
+              {isPending ? null : isLoggedIn ? (
+                <button
+                  type="button"
                   onClick={handleSignOut}
-                  variant="ghost"
-                  className="bg-[#FFD500] font-bold text-gray-600"
+                  className={`${btnSecondary} h-12 w-full`}
                 >
+                  <FaArrowRightFromBracket aria-hidden="true" className="text-xs" />
                   Logout
-                </Button>
+                </button>
               ) : (
                 <>
-                  <Link
-                    href="/signin"
-                    className="text-sm font-semibold text-gray-200 transition-colors duration-300 hover:text-[#FFD500]"
-                  >
-                    Signin
+                  <Link href="/signup" className={`${btnPrimary} h-12 w-full`}>
+                    Sign Up
                   </Link>
-                  <Link
-                    href="/signup"
-                    className="h-11 bg-gradient-to-r from-[#FFD500] to-[#171817] px-6 text-sm font-bold text-white shadow-[0_4px_20px_rgba(255,213,0,0.2)] transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[1px] rounded-full flex justify-center items-center"
-                  >
-                    SignUp
+                  <Link href="/signin" className={`${btnSecondary} h-12 w-full`}>
+                    Sign In
                   </Link>
                 </>
               )}
             </div>
           </div>
-
-          {/* 📱 MOBILE MENU TRIGGER */}
-          <div className="flex md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center rounded-xl p-2.5 text-gray-300 transition-all hover:bg-[#88865A]/10 hover:text-[#FFD500]"
-              aria-label="Toggle Menu"
-            >
-              {isMenuOpen ? (
-                <svg
-                  className="h-6 w-6 text-[#FFD500]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 📱 MOBILE DROPDOWN MENU */}
-      {isMenuOpen && (
-        <div className="border-t border-[#88865A]/20 bg-[#0E0E0A]/98 backdrop-blur-xl md:hidden">
-          <div className="space-y-2 px-4 py-6">
-            <ul className="space-y-1">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="block rounded-xl px-4 py-3.5 text-base font-medium text-gray-300 transition-all hover:bg-[#88865A]/15 hover:text-[#FFD500]"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-4 border-t border-[#88865A]/10 pt-4">
-              <div className="flex flex-col gap-3">
-                {user ? (
-                  <Button
-                    onClick={handleSignOut}
-                    variant="ghost"
-                    className="bg-[#FFD500] font-bold text-gray-600"
-                  >
-                    Logout
-                  </Button>
-                ) : (
-                  <>
-                    <Link
-                      href="/signin"
-                      className="text-sm font-semibold text-gray-200 transition-colors duration-300 hover:text-[#FFD500]"
-                    >
-                      Signin
-                    </Link>
-                    <Link
-                      href="/signup"
-                      className="h-11 w-19 bg-gradient-to-r from-[#FFD500] to-[#171817] px-6 text-sm font-bold text-white shadow-[0_4px_20px_rgba(255,213,0,0.2)] transition-all duration-300 hover:translate-y-[-1px] active:translate-y-[1px] rounded-full flex justify-center items-center"
-                    >
-                      SignUp
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 };
 
