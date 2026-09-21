@@ -1,154 +1,400 @@
+import { FaCircleCheck, FaCreditCard, FaInbox, FaLock } from "react-icons/fa6";
 import { getUserHiringHistory } from "@/lib/api/hiring";
 import { getUserSession } from "@/lib/core/session";
 
+/*
+  Palette
+  Deep Navy #0B1526 | Navy #14213D | Gold #E2B93B (#F3D98B / #C99A12)
+  সাদা background-এ gold লেখা #8A6A1C | Cream #FBF6EA | Beige #E8DCC8
+  Border #DCE3EE | Pill #EAF0F9 | Tint #F3F6FB
+  Status: pending কমলা #B45309 | accepted সবুজ #15803D | rejected লাল #B91C1C
+*/
+
+const CURRENCY = "$"; // Lawyer profile ও Browse card-এর সাথে একই রাখুন
+
+const headingFont = {
+  fontFamily: "var(--font-heading, Georgia, 'Times New Roman', serif)",
+};
+
+const focusRing =
+  "outline-none focus-visible:ring-2 focus-visible:ring-[#E2B93B] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
+
+const STATUS_CONFIG = {
+  pending: {
+    label: "Pending",
+    badge: "border-[#B45309]/30 bg-[#B45309]/[0.08] text-[#B45309]",
+    dot: "bg-[#B45309]",
+  },
+  accepted: {
+    label: "Accepted",
+    badge: "border-[#15803D]/30 bg-[#15803D]/[0.08] text-[#15803D]",
+    dot: "bg-[#15803D]",
+  },
+  rejected: {
+    label: "Rejected",
+    badge: "border-[#B91C1C]/30 bg-[#B91C1C]/[0.08] text-[#B91C1C]",
+    dot: "bg-[#B91C1C]",
+  },
+};
+
 export default async function UserHiringHistory() {
   const user = await getUserSession();
-  const userId = user?.id;
-
-  const data = await getUserHiringHistory(userId);
+  const data = await getUserHiringHistory(user?.id);
   const requests = Array.isArray(data) ? data : [];
 
-  return (
-    <div className="p-6 bg-[#0f120d] min-h-screen text-gray-200">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#E8EDDF]">Hiring history</h1>
-        <p className="text-sm text-gray-400 mt-2">
-          Track the lawyers youve reached out to and their response status
-        </p>
-      </div>
+  // Header-এর summary গোনা (unknown status pending ধরা হয়, badge-এর মতোই)
+  const counts = { pending: 0, accepted: 0, rejected: 0, paid: 0 };
+  requests.forEach((req) => {
+    const key = STATUS_CONFIG[req.status] ? req.status : "pending";
+    counts[key] += 1;
+    if (req.paymentStatus === "paid") counts.paid += 1;
+  });
 
-      {requests.length === 0 ? (
-        <div className="bg-[#1a2114] border border-[#556B2F]/30 rounded-2xl p-16 text-center">
-          <p className="text-5xl mb-4">📭</p>
-          <h3 className="text-lg font-semibold text-[#E8EDDF] mb-1">
-            No hiring requests yet
-          </h3>
-          <p className="text-sm text-gray-400">
-            When you hire a lawyer, your requests will appear here.
-          </p>
-        </div>
-      ) : (
-        <div className="bg-[#1a2114] border border-[#556B2F]/20 rounded-2xl overflow-hidden shadow-2xl">
-          <table className="w-full text-sm">
-            <thead className="bg-[#556B2F]/10">
-              <tr className="border-b border-[#556B2F]/20">
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  #
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Lawyer
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Specialization
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Fee
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-[#5f26c9] uppercase tracking-wider">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#556B2F]/10">
+  return (
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6">
+      <div className="overflow-hidden rounded-2xl border border-[#DCE3EE] bg-white shadow-[0_10px_40px_rgba(11,21,38,0.12)]">
+        {/* ---------- Header ---------- */}
+        <header className="relative overflow-hidden bg-gradient-to-br from-[#0B1526] via-[#14213D] to-[#0B1526] px-6 py-8 sm:px-8">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#F3D98B] via-[#E2B93B] to-[#C99A12]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 right-0 h-56 w-80 rounded-full bg-[#E2B93B]/10 blur-[90px]"
+          />
+
+          <div className="relative">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-8 bg-[#E2B93B]" aria-hidden="true" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#F3D98B]">
+                My requests
+              </span>
+            </div>
+            <h1
+              className="mt-3 text-3xl font-bold tracking-[-0.015em] text-[#FBF6EA] sm:text-4xl"
+              style={headingFont}
+            >
+              Hiring history
+            </h1>
+            <div
+              aria-hidden="true"
+              className="mt-3 h-[3px] w-14 rounded-full bg-gradient-to-r from-[#E2B93B] to-transparent"
+            />
+            <p className="mt-3 text-sm leading-relaxed text-[#E8DCC8]/85 sm:text-base">
+              Track the lawyers you&apos;ve contacted and how they responded
+            </p>
+
+            {requests.length > 0 && (
+              <dl className="mt-6 flex flex-wrap gap-3">
+                <Stat label="Total" value={requests.length} />
+                <Stat label="Pending" value={counts.pending} />
+                <Stat label="Accepted" value={counts.accepted} />
+                <Stat label="Rejected" value={counts.rejected} />
+                <Stat label="Paid" value={counts.paid} />
+              </dl>
+            )}
+          </div>
+        </header>
+
+        {/* ---------- Body ---------- */}
+        {requests.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            {/* Desktop / Tablet: table */}
+            <div className="hidden md:block">
+              <table className="w-full text-sm">
+                <caption className="sr-only">
+                  Your hiring requests, their status and payment actions
+                </caption>
+                <thead>
+                  <tr className="border-b border-[#DCE3EE] bg-[#F3F6FB]">
+                    <Th>#</Th>
+                    <Th>Lawyer</Th>
+                    <Th>Specialization</Th>
+                    <Th>Fee</Th>
+                    <Th>Date</Th>
+                    <Th>Status</Th>
+                    <Th>Action</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {requests.map((req, i) => (
+                    <RequestRow key={String(req._id)} req={req} index={i} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile: card list */}
+            <ul className="divide-y divide-[#E6ECF5] md:hidden">
               {requests.map((req, i) => (
-                <tr
-                  key={req._id}
-                  className="hover:bg-[#556B2F]/5 transition-all"
-                >
-                  <td className="px-6 py-4 text-gray-400">
-                    {String(i + 1).padStart(2, "0")}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={req.lawyerName || "?"} />
-                      <span className="font-medium text-white">
-                        {req.lawyerName || "Unknown"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">
-                    {req.specialization || "—"}
-                  </td>
-                  <td className="px-6 py-4 font-semibold text-[#C5D86D]">
-                    {req.fee != null ? `৳${req.fee}` : "—"}
-                  </td>
-                  <td className="px-6 py-4 text-gray-400">
-                    {req.requestDate
-                      ? new Date(req.requestDate).toLocaleDateString("en-GB")
-                      : "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    { req.paymentStatus === "paid" ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20">
-                        ✓ Paid
-                      </span>
-                    ) :   req.status === "accepted" ? (
-                      <form action="/api/checkout_sessions" method="POST">
-                        <input
-                          type="hidden"
-                          name="paymentType"
-                          value="hiring"
-                        />
-                        <input
-                          type="hidden"
-                          name="hiringRequest_Id"
-                          value={req._id}
-                        />
-                        <button
-                          type="submit"
-                          className="px-4 py-2 bg-[#556B2F] hover:bg-[#4a5e29] text-white rounded-lg font-medium transition-all shadow-lg"
-                        >
-                          Pay Now
-                        </button>
-                      </form>
-                    ) : (
-                      <span className="text-gray-500 italic text-xs capitalize">
-                        {req.status}
-                      </span>
-                    )}
-                  </td>
-                </tr>
+                <RequestCard key={String(req._id)} req={req} index={i} />
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </ul>
+
+            {/* Footer */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#DCE3EE] bg-[#F3F6FB] px-6 py-3 text-xs text-[#475569]">
+              <span>
+                {requests.length} {requests.length === 1 ? "request" : "requests"}{" "}
+                total
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <FaLock aria-hidden="true" className="text-[#8A6A1C]" />
+                Secure checkout powered by Stripe
+              </span>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
 
-function Avatar({ name }) {
-  const initials = name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+// ── Small layout helpers ───────────────────────────────────────
+
+function Stat({ label, value }) {
   return (
-    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-[#1a2114] bg-[#C5D86D]">
+    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5">
+      <dt className="text-xs text-[#E8DCC8]/85">{label}</dt>
+      <dd className="text-sm font-bold text-[#F3D98B]" style={headingFont}>
+        {value}
+      </dd>
+    </div>
+  );
+}
+
+function Th({ children }) {
+  return (
+    <th
+      scope="col"
+      className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-[0.12em] text-[#475569]"
+    >
+      {children}
+    </th>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="px-6 py-16 text-center">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#14213D] text-2xl text-[#E2B93B]">
+        <FaInbox aria-hidden="true" />
+      </div>
+      <h3
+        className="mt-6 text-2xl font-bold tracking-[-0.01em] text-[#14213D]"
+        style={headingFont}
+      >
+        No hiring requests yet
+      </h3>
+      <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#475569]">
+        When you hire a lawyer, your requests will appear here.
+      </p>
+    </div>
+  );
+}
+
+// ── Shared formatting ───────────────────────────────────────────
+
+function formatDate(value) {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function Fee({ value }) {
+  const hasFee = value !== undefined && value !== null && value !== "";
+  if (!hasFee) return <span className="text-[#64748B]">—</span>;
+  return (
+    <span className="font-semibold text-[#0B1526]">
+      {CURRENCY}
+      {value}
+      <span className="ml-0.5 text-xs font-medium text-[#64748B]">/hr</span>
+    </span>
+  );
+}
+
+function SpecPill({ children }) {
+  return (
+    <span className="inline-flex max-w-full items-center rounded-full bg-[#EAF0F9] px-3 py-1 text-xs font-medium text-[#14213D]">
+      <span className="truncate">{children}</span>
+    </span>
+  );
+}
+
+// ── Table row (desktop / tablet) ───────────────────────────────
+
+function RequestRow({ req, index }) {
+  return (
+    <tr className="border-b border-[#E6ECF5] transition-colors duration-200 hover:bg-[#F8FAFD]">
+      <td className="px-5 py-4 text-sm font-medium text-[#475569]">
+        {String(index + 1).padStart(2, "0")}
+      </td>
+      <td className="px-5 py-4">
+        <LawyerInfo name={req.lawyerName} />
+      </td>
+      <td className="px-5 py-4">
+        {req.specialization ? (
+          <SpecPill>{req.specialization}</SpecPill>
+        ) : (
+          <span className="text-[#64748B]">—</span>
+        )}
+      </td>
+      <td className="px-5 py-4">
+        <Fee value={req.fee} />
+      </td>
+      <td className="px-5 py-4 text-[#14213D]">{formatDate(req.requestDate)}</td>
+      <td className="px-5 py-4">
+        <StatusBadge status={req.status} />
+      </td>
+      <td className="px-5 py-4">
+        <ActionCell req={req} />
+      </td>
+    </tr>
+  );
+}
+
+// ── Card (mobile) ───────────────────────────────────────────────
+
+function RequestCard({ req, index }) {
+  return (
+    <li className="space-y-4 px-5 py-5">
+      <div className="flex items-start justify-between gap-3">
+        <LawyerInfo name={req.lawyerName} spec={req.specialization} />
+        <span className="shrink-0 text-xs font-medium text-[#475569]">
+          #{String(index + 1).padStart(2, "0")}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 rounded-xl border border-[#DCE3EE] bg-[#F3F6FB] p-4">
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#475569]">
+            Fee
+          </p>
+          <p className="mt-1 text-sm">
+            <Fee value={req.fee} />
+          </p>
+        </div>
+        <div>
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-[#475569]">
+            Requested
+          </p>
+          <p className="mt-1 text-sm text-[#14213D]">{formatDate(req.requestDate)}</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <StatusBadge status={req.status} />
+      </div>
+
+      <ActionCell req={req} fullWidth />
+    </li>
+  );
+}
+
+// ── Lawyer info (avatar + name + optional specialization) ──────
+
+function LawyerInfo({ name, spec }) {
+  return (
+    <div className="flex min-w-0 items-center gap-3">
+      <Avatar name={name || "?"} />
+      <div className="min-w-0">
+        <p className="truncate font-semibold capitalize text-[#14213D]">
+          {name || "Unknown"}
+        </p>
+        {spec && (
+          <p className="mt-0.5 max-w-[220px] truncate text-xs text-[#475569]">
+            {spec}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Action: Paid / Pay Now / info text ─────────────────────────
+
+function ActionCell({ req, fullWidth = false }) {
+  if (req.paymentStatus === "paid") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#B7E4C7] bg-[#ECFDF3] px-3 py-1.5 text-xs font-semibold text-[#166534]">
+        <FaCircleCheck aria-hidden="true" />
+        Paid
+      </span>
+    );
+  }
+
+  if (req.status === "accepted") {
+    return <PayNowButton requestId={req._id} fullWidth={fullWidth} />;
+  }
+
+  return (
+    <span className="text-sm text-[#64748B]">
+      {req.status === "rejected" ? "No action needed" : "Waiting for lawyer"}
+    </span>
+  );
+}
+
+function PayNowButton({ requestId, fullWidth }) {
+  return (
+    <form
+      action="/api/checkout_sessions"
+      method="POST"
+      className={fullWidth ? "w-full" : ""}
+    >
+      <input type="hidden" name="paymentType" value="hiring" />
+      <input type="hidden" name="hiringRequest_Id" value={String(requestId)} />
+      <button
+        type="submit"
+        className={`inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-[#F3D98B] via-[#E2B93B] to-[#C99A12] px-5 text-sm font-bold tracking-wide text-[#0B1526] shadow-[0_6px_18px_rgba(226,185,59,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(226,185,59,0.5)] active:scale-95 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 ${focusRing} ${
+          fullWidth ? "w-full" : ""
+        }`}
+      >
+        <FaCreditCard aria-hidden="true" className="text-xs" />
+        Pay now
+      </button>
+    </form>
+  );
+}
+
+// ── Avatar ──────────────────────────────────────────────────────
+
+function Avatar({ name }) {
+  const initials =
+    String(name)
+      .split(" ")
+      .filter(Boolean)
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase() || "?";
+
+  return (
+    <div
+      aria-hidden="true"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#14213D] text-xs font-bold text-[#E2B93B] ring-2 ring-[#E2B93B]/40"
+      style={headingFont}
+    >
       {initials}
     </div>
   );
 }
 
+// ── Status Badge ─────────────────────────────────────────────────
+
 function StatusBadge({ status }) {
-  const styles = {
-    pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-    accepted: "bg-green-500/10 text-green-500 border-green-500/20",
-    rejected: "bg-red-500/10 text-red-500 border-red-500/20",
-  };
+  const s = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
 
   return (
     <span
-      className={`px-3 py-1 rounded-full text-[10px] font-bold border ${styles[status] || styles.pending} uppercase`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${s.badge}`}
     >
-      {status || "Pending"}
+      <span aria-hidden="true" className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
+      {s.label}
     </span>
   );
 }
