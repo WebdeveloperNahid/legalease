@@ -9,6 +9,7 @@ import {
   FaHouse,
   FaMagnifyingGlass,
   FaScaleBalanced,
+  FaShieldHalved,
 } from "react-icons/fa6";
 
 /*
@@ -60,18 +61,67 @@ export default function NotFound() {
 
   return (
     <section className="relative flex min-h-[calc(100svh-72px)] items-center justify-center overflow-hidden bg-gradient-to-br from-[#0B1526] via-[#14213D] to-[#0B1526] px-4 py-16">
-      {/* Background decoration */}
+      <style>{`
+        @keyframes scanLine {
+          0%   { transform: translateY(-10%); opacity: 0; }
+          8%   { opacity: 0.55; }
+          50%  { opacity: 0.35; }
+          92%  { opacity: 0; }
+          100% { transform: translateY(110%); opacity: 0; }
+        }
+        @keyframes ringSpin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        @keyframes shimmerMove {
+          0%   { background-position: 0% 0%; }
+          100% { background-position: 120px 120px; }
+        }
+      `}</style>
+
+      {/* ================= Background decoration ================= */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {/* Grid, সামান্য shimmer সহ */}
         <div
-          className="absolute inset-0 opacity-[0.05]"
+          className="absolute inset-0 opacity-[0.06]"
           style={{
             backgroundImage:
               "linear-gradient(#FBF6EA 1px, transparent 1px), linear-gradient(90deg, #FBF6EA 1px, transparent 1px)",
             backgroundSize: "56px 56px",
+            animation: reduceMotion ? "none" : "shimmerMove 6s linear infinite",
           }}
         />
+
+        {/* বিশাল, প্রায় অদৃশ্য outline 404 */}
+        <span
+          style={headingFont}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[54%] select-none text-[16rem] font-black leading-none sm:text-[24rem]"
+          style2={undefined}
+        >
+        </span>
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[14rem] font-black leading-none text-transparent sm:text-[22rem]"
+          style={{
+            WebkitTextStroke: "1px rgba(226,185,59,0.08)",
+            ...headingFont,
+          }}
+        >
+          404
+        </div>
+
+        {/* Gold glow */}
         <div className="absolute left-1/2 top-1/3 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#E2B93B]/15 blur-[140px]" />
         <div className="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#793915]/20 blur-[120px]" />
+
+        {/* সোনালি scan-line */}
+        {!reduceMotion && (
+          <div
+            className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-[#E2B93B]/25 to-transparent"
+            style={{ animation: "scanLine 7s ease-in-out infinite" }}
+          />
+        )}
+
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2B93B]/60 to-transparent" />
       </div>
 
@@ -82,12 +132,32 @@ export default function NotFound() {
         className="relative w-full max-w-xl text-center"
       >
         {/* Icon badge */}
-        <motion.div variants={item} className="relative mx-auto h-24 w-24 sm:h-28 sm:w-28">
+        <motion.div variants={item} className="relative mx-auto h-28 w-28 sm:h-32 sm:w-32">
           {!reduceMotion && (
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 animate-ping rounded-full bg-[#E2B93B]/20 [animation-duration:2.5s]"
-            />
+            <>
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 animate-ping rounded-full bg-[#E2B93B]/20 [animation-duration:2.5s]"
+              />
+              {/* ঘুরন্ত dashed ring */}
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                className="absolute -inset-2"
+                style={{ animation: "ringSpin 14s linear infinite" }}
+              >
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="48"
+                  fill="none"
+                  stroke="#E2B93B"
+                  strokeOpacity="0.35"
+                  strokeWidth="1"
+                  strokeDasharray="4 7"
+                />
+              </svg>
+            </>
           )}
           <motion.div
             animate={reduceMotion ? {} : { y: [0, -8, 0] }}
@@ -103,8 +173,16 @@ export default function NotFound() {
           </motion.div>
         </motion.div>
 
+        {/* Trust badge */}
+        <motion.div variants={item} className="mt-6 flex justify-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E2B93B]/30 bg-[#0B1526]/40 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#E8DCC8]/70 backdrop-blur-sm">
+            <FaShieldHalved aria-hidden="true" className="text-[#E2B93B]" />
+            Verified Legal Platform
+          </span>
+        </motion.div>
+
         {/* Eyebrow */}
-        <motion.div variants={item} className="mt-9 flex items-center justify-center gap-3">
+        <motion.div variants={item} className="mt-5 flex items-center justify-center gap-3">
           <span className="h-px w-8 bg-[#E2B93B]" aria-hidden="true" />
           <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#F3D98B]">
             Error 404
