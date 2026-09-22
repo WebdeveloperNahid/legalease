@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
