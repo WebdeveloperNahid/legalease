@@ -1,4 +1,4 @@
-# ⚖️ LegalEase – Online Lawyer Hiring Platform
+# ⚖️ LegalEase – Online Lawyer Hiring Platform  _ where user can higher lawyer. 
 
 A full-stack **MERN + Next.js** web application that connects legal seekers and businesses with verified lawyers through a secure, streamlined digital marketplace.
 
