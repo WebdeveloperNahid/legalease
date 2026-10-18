@@ -7,6 +7,8 @@ import { useEffect, useId, useRef, useState, useTransition } from "react";
 import {
   FaArrowRight,
   FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
   FaMagnifyingGlass,
   FaScaleBalanced,
   FaXmark,
@@ -18,6 +20,7 @@ const CURRENCY = "$"; // আপনার আসল মুদ্রার সা�
 const FEE_UNIT = "/hr";
 const DEBOUNCE_MS = 400;
 const SKELETON_COUNT = 6;
+const PAGE_SIZE = 9; // page.jsx-এর PAGE_SIZE-এর সাথে একই রাখুন
 
 const SPECIALTIES = [
   "Criminal Law",
@@ -64,11 +67,12 @@ const STATUS_STYLES = {
 };
 
 /* ---------- Helpers ---------- */
-function buildQuery(search, specialty, availability) {
+function buildQuery(search, specialty, availability, page) {
   const params = new URLSearchParams();
   if (search.trim()) params.set("search", search.trim());
   if (specialty) params.set("specialty", specialty);
   if (availability) params.set("availability", availability);
+  if (page && page > 1) params.set("page", String(page));
   return params.toString();
 }
 
@@ -80,6 +84,9 @@ export default function BrowseLawyersClient({
   initialSearch,
   initialSpecialty,
   initialAvailability,
+  currentPage = 1,
+  totalPages = 1,
+  totalCount = 0,
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -91,12 +98,12 @@ export default function BrowseLawyersClient({
 
   // সর্বশেষ যে query URL-এ আছে (অকারণে প্রথমবার বা একই query আবার push ঠেকাতে)
   const lastQuery = useRef(
-    buildQuery(initialSearch, initialSpecialty, initialAvailability)
+    buildQuery(initialSearch, initialSpecialty, initialAvailability, currentPage)
   );
 
-  // ডিবাউন্স করে URL আপডেট -> Server Component রি-রান -> নতুন ডেটা
+  // ফিল্টার (search/specialty/availability) বদলালে সবসময় page 1-এ ফিরে যাবে
   useEffect(() => {
-    const query = buildQuery(search, specialty, availability);
+    const query = buildQuery(search, specialty, availability, 1);
     if (query === lastQuery.current) return;
 
     const timeout = setTimeout(() => {
@@ -109,7 +116,19 @@ export default function BrowseLawyersClient({
     }, DEBOUNCE_MS);
 
     return () => clearTimeout(timeout);
-  }, [search, specialty, availability, pathname, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, specialty, availability]);
+
+  // পেজ নম্বর বাটনে ক্লিক করলে সরাসরি (ডিবাউন্স ছাড়া) নতুন page-এ যাওয়া
+  const goToPage = (page) => {
+    const query = buildQuery(search, specialty, availability, page);
+    lastQuery.current = query;
+    startTransition(() => {
+      router.push(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    });
+  };
 
   const lawyers = initialLawyers;
   const loading = isPending;
@@ -120,6 +139,9 @@ export default function BrowseLawyersClient({
     setSpecialty("");
     setAvailability("");
   };
+
+  const rangeStart = totalCount === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, totalCount);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F3F6FB] to-[#EEF2F9]">
@@ -170,10 +192,7 @@ export default function BrowseLawyersClient({
         <div className="mt-10">
           {loading ? (
             <>
-              <p
-                role="status"
-                className="mb-6 text-sm text-[#475569]"
-              >
+              <p role="status" className="mb-6 text-sm text-[#475569]">
                 Searching lawyers…
               </p>
               <SkeletonGrid />
@@ -183,16 +202,16 @@ export default function BrowseLawyersClient({
           ) : (
             <>
               <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                <p
-                  role="status"
-                  aria-live="polite"
-                  className="text-sm text-[#475569]"
-                >
+                <p role="status" aria-live="polite" className="text-sm text-[#475569]">
                   Showing{" "}
                   <strong className="font-semibold text-[#14213D]">
-                    {lawyers.length}
+                    {rangeStart}–{rangeEnd}
                   </strong>{" "}
-                  legal {lawyers.length === 1 ? "professional" : "professionals"}
+                  of{" "}
+                  <strong className="font-semibold text-[#14213D]">
+                    {totalCount}
+                  </strong>{" "}
+                  legal {totalCount === 1 ? "professional" : "professionals"}
                 </p>
 
                 {hasFilters && (
@@ -213,11 +232,102 @@ export default function BrowseLawyersClient({
                   </li>
                 ))}
               </ul>
+
+              {/* ---------- Pagination ---------- */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+              />
             </>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+function getPageNumbers(current, total) {
+  // ছোট হলে সব দেখাবে, বড় হলে current-এর আশেপাশে + শুরু/শেষ + "..."
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const pages = new Set([1, total, current, current - 1, current + 1]);
+  const sorted = [...pages].filter((p) => p >= 1 && p <= total).sort((a, b) => a - b);
+
+  const result = [];
+  let prev = null;
+  for (const p of sorted) {
+    if (prev !== null && p - prev > 1) result.push("ellipsis-" + p);
+    result.push(p);
+    prev = p;
+  }
+  return result;
+}
+
+function Pagination({ currentPage, totalPages, onPageChange }) {
+  if (totalPages <= 1) return null;
+
+  const pages = getPageNumbers(currentPage, totalPages);
+
+  const navBtn =
+    "flex h-10 w-10 items-center justify-center rounded-xl border border-[#DCE3EE] bg-white text-sm font-semibold text-[#14213D] transition-colors duration-200 hover:border-[#E2B93B] hover:bg-[#FBF6EA] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#DCE3EE] disabled:hover:bg-white";
+
+  return (
+    <nav
+      aria-label="Pagination"
+      className="mt-10 flex flex-wrap items-center justify-center gap-2"
+    >
+      <button
+        type="button"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+        aria-label="Previous page"
+        className={`${navBtn} ${focusRing}`}
+      >
+        <FaChevronLeft aria-hidden="true" className="text-xs" />
+      </button>
+
+      {pages.map((p) =>
+        typeof p === "number" ? (
+          <button
+            key={p}
+            type="button"
+            onClick={() => onPageChange(p)}
+            aria-current={p === currentPage ? "page" : undefined}
+            className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-semibold transition-colors duration-200 ${focusRing} ${
+              p === currentPage
+                ? "bg-[#14213D] text-[#FBF6EA]"
+                : "border border-[#DCE3EE] bg-white text-[#14213D] hover:border-[#E2B93B] hover:bg-[#FBF6EA]"
+            }`}
+          >
+            {p}
+          </button>
+        ) : (
+          <span
+            key={p}
+            aria-hidden="true"
+            className="flex h-10 w-6 items-center justify-center text-sm text-[#94A3B8]"
+          >
+            …
+          </span>
+        )
+      )}
+
+      <button
+        type="button"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+        aria-label="Next page"
+        className={`${navBtn} ${focusRing}`}
+      >
+        <FaChevronRight aria-hidden="true" className="text-xs" />
+      </button>
+    </nav>
   );
 }
 

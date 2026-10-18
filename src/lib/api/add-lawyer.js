@@ -9,11 +9,15 @@ export const getAllPublicLawyers = async (
   search = "",
   specialty = "",
   availability = "",
+   page = 1,
+  limit = 9,
 ) => {
   const params = new URLSearchParams({
     search,
     specialty,
     availability,
+    page: String(page),
+    limit: String(limit),
   });
 
   return serverFetch(`/api/public/lawyers?${params.toString()}`);
