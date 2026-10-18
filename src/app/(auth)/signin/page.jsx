@@ -472,10 +472,10 @@ function SignupForm() {
             <p className="mt-7 border-t border-[#DCE3EE] pt-6 text-center text-sm text-[#64748B]">
               Already have an account?{" "}
               <Link
-                href={`/signin?redirect=${encodeURIComponent(redirectTo)}`}
+                href={`/signup?redirect=${encodeURIComponent(redirectTo)}`}
                 className="font-semibold text-[#8A6A1C] hover:text-[#14213D] hover:underline"
               >
-                Sign in
+                SignUp
               </Link>
             </p>
 
